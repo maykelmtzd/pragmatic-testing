@@ -12,15 +12,12 @@ namespace Api_pragmatic_testing.Controllers
 	{
 
 		[HttpGet("users")]
-		public JsonResult GetUsers() 
+		public IActionResult GetUsers() 
 		{
-			return new JsonResult(
-					new List<object>()
-					{
-						new { Id = 1, Name = "Name1" },
-						new { Id = 2, Name = "Name2" }
-					}
-				);
+			return Ok(new List<object>() { 
+					new { Id = 1, Name = "Name1" },
+					new { Id = 2, Name = "Name2" }
+				});
 		}
 	}
 }
