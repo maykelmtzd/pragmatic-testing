@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api_pragmatic_testing.Controllers
 {
 	[ApiController]
+	[Route("api")]
 	public class CredentialManagementController : ControllerBase
 	{
 
-		[HttpGet("api/users")]
+		[HttpGet("users")]
 		public JsonResult GetUsers() 
 		{
 			return new JsonResult(
