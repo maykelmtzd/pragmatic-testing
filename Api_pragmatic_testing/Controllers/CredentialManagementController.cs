@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application_pragmatic_testing.Commands;
 using Application_pragmatic_testing.Dtos;
+using Application_pragmatic_testing.Responses;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api_pragmatic_testing.Controllers
@@ -11,6 +14,12 @@ namespace Api_pragmatic_testing.Controllers
 	[Route("api")]
 	public class CredentialManagementController : ControllerBase
 	{
+		private readonly IMediator _mediator;
+
+		public CredentialManagementController(IMediator mediator)
+		{
+			_mediator = mediator;
+		}
 
 		[HttpGet("users")]
 		public IActionResult GetUsers() 
@@ -22,9 +31,10 @@ namespace Api_pragmatic_testing.Controllers
 		}
 
 		[HttpPost("credential/changePassword")]
-		public IActionResult ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
+		public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
 		{
-			return Ok(changePasswordDto);
+			ChangePasswordResponse changePasswordResponse = await _mediator.Send(new ChangePasswordCommand(changePasswordDto));
+			return Ok(changePasswordResponse);
 		}
 	}
 }
