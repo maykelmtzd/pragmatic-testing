@@ -2,6 +2,6 @@
 {
 	public interface ICredentialService
 	{
-		bool IsUserValid(string userName);
+		bool IsPlatinumUser(string userName);
 	}
 }

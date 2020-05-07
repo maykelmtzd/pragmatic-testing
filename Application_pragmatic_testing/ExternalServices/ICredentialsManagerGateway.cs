@@ -2,6 +2,6 @@
 {
 	public interface ICredentialsManagerGateway
 	{
-		string IsUserValid(string url);
+		string IsPlatinumUser(string url);
 	}
 }

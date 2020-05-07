@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application_pragmatic_testing.Dtos;
+using Application_pragmatic_testing.ExternalServices;
 using Application_pragmatic_testing.Responses;
 using MediatR;
 
@@ -20,6 +21,14 @@ namespace Application_pragmatic_testing.Commands
 
 		public class ChangePasswordHandler : RequestHandler<ChangePasswordCommand, ChangePasswordResponse>
 		{
+
+			private readonly ICredentialService _credentialService;
+
+			public ChangePasswordHandler(ICredentialService credentialService)
+			{
+				_credentialService = credentialService;
+			}
+
 			protected override ChangePasswordResponse Handle(ChangePasswordCommand command)
 			{
 				// Make some call to Credential service. Maybe to get some result that I could pass to the domain object, like isHighProfileUser.
@@ -36,6 +45,9 @@ namespace Application_pragmatic_testing.Commands
 
 				// raise the event passwordChanged, or just call a service (eventPublisher) that publishes the event.
 				// The EventPublisher would have the real EventGridClient third party class  wrapped in a Gateway class.
+
+
+				var isPlatinumUser = _credentialService.IsPlatinumUser(command.ChangePasswordDto.UserName);
 
 				return new ChangePasswordResponse()
 				{

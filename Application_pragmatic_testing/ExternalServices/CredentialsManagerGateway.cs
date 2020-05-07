@@ -14,7 +14,7 @@ namespace Application_pragmatic_testing.ExternalServices
 		{
 			_httpClient = httpClient;
 		}
-		public string IsUserValid(string url)
+		public string IsPlatinumUser(string url)
 		{
 			return _httpClient.GetStringAsync(url).Result;
 		}
