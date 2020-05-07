@@ -6,18 +6,24 @@ using Core_pragmatic_testing.PasswordRules;
 
 namespace Core_pragmatic_testing.Entities
 {
-	public class NewPasswordPolicy
+	public class PasswordHistory
 	{
 		private Password _currentPassword;
 		private readonly List<Password> _previousPasswords;
 		private readonly IPasswordRulesFactory _passwordRulesFactory;
 
-		public NewPasswordPolicy(Password currentPassword, List<Password> previousPasswords, IPasswordRulesFactory passwordRulesFactory)
+		public PasswordHistory(string userName,
+			Password currentPassword,
+			List<Password> previousPasswords,
+			IPasswordRulesFactory passwordRulesFactory)
 		{
+			UserName = userName;
 			_currentPassword = currentPassword;
 			_previousPasswords = previousPasswords;
 			_passwordRulesFactory = passwordRulesFactory;
 		}
+
+		public string UserName { get; private set; }
 
 		//We could change this to apply the rules when creating the password: Password.Create(newPassword)
 		// There are rules that depend on passwordCreationTime so not all could be apply at Password.Create(newPassword)

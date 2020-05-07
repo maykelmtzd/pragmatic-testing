@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application_pragmatic_testi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core_pragmatic_testing", "Core_pragmatic_testing\Core_pragmatic_testing.csproj", "{CA7E8BEF-0455-4A08-918E-CB0D8E25B625}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra_pragmatic_testing", "Infra_pragmatic_testing\Infra_pragmatic_testing.csproj", "{EE1483FC-71F2-4F3F-A7E0-BA1ED8736BFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{CA7E8BEF-0455-4A08-918E-CB0D8E25B625}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA7E8BEF-0455-4A08-918E-CB0D8E25B625}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA7E8BEF-0455-4A08-918E-CB0D8E25B625}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE1483FC-71F2-4F3F-A7E0-BA1ED8736BFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE1483FC-71F2-4F3F-A7E0-BA1ED8736BFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE1483FC-71F2-4F3F-A7E0-BA1ED8736BFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE1483FC-71F2-4F3F-A7E0-BA1ED8736BFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
