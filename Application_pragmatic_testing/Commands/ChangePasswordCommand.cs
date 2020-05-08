@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Application_pragmatic_testing.Dtos;
 using Application_pragmatic_testing.ExternalServices;
 using Application_pragmatic_testing.Responses;
+using Core_pragmatic_testing.Entities;
+using Core_pragmatic_testing.Repositories;
 using MediatR;
 
 namespace Application_pragmatic_testing.Commands
@@ -23,10 +25,12 @@ namespace Application_pragmatic_testing.Commands
 		{
 
 			private readonly ICredentialService _credentialService;
+			private readonly IPasswordHistoryRepository _passwordHistoryRepo;
 
-			public ChangePasswordHandler(ICredentialService credentialService)
+			public ChangePasswordHandler(ICredentialService credentialService, IPasswordHistoryRepository passwordHistoryRepo)
 			{
 				_credentialService = credentialService;
+				_passwordHistoryRepo = passwordHistoryRepo;
 			}
 
 			protected override ChangePasswordResponse Handle(ChangePasswordCommand command)
@@ -35,7 +39,7 @@ namespace Application_pragmatic_testing.Commands
 
 				// User repo to load PasswordManagerObject who has a list of oldPassword and a list of rules for the newPassword to comply with.
 
-				// Make call to passwordManagerObject passing isHighProfileUser to determine if password can be change.
+				// Make call to passwordHistoryObject passing isHighProfileUser to determine if password can be change.
 
 				// If it can be changed, call Credential service ChangePasswordMethod
 
@@ -47,7 +51,21 @@ namespace Application_pragmatic_testing.Commands
 				// The EventPublisher would have the real EventGridClient third party class  wrapped in a Gateway class.
 
 
-				var isPlatinumUser = _credentialService.IsPlatinumUser(command.ChangePasswordDto.UserName);
+
+				//Translate Dto  information into Domain objects format(Some form of validation takes place).
+				var userName = command.ChangePasswordDto.UserName;
+				var newPassword = new Password(command.ChangePasswordDto.NewPassword);
+
+				//call external dependencies to retrieve information needed to execute business logic.
+				var isHighProfileUser = _credentialService.IsHighProfileUser(userName);
+
+				//Load domain object(usually aggregate) in memory
+				var passwordHistory = _passwordHistoryRepo.GetPasswordHistory(userName);
+
+				//Call operation on aggregate which mutate some state.
+				var wasPasswordChanged = passwordHistory.CreateNewPassword(newPassword, isHighProfileUser);
+
+
 
 				return new ChangePasswordResponse()
 				{

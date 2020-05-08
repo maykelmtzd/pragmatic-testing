@@ -17,7 +17,7 @@ namespace Application_pragmatic_testing.ExternalServices
 			_credentialsManagerSettings = credentialsManagerSettings;
 		}
 
-		public bool IsPlatinumUser(string userName)
+		public bool IsHighProfileUser(string userName)
 		{
 			//TODO Add query string paramenter to URL to pass userName and some other constant parameter like Domain=Construction
 			string response = _credentialsManagerGateway.IsPlatinumUser(_credentialsManagerSettings.Value.Url);

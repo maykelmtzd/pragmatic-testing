@@ -7,7 +7,7 @@ using Infra_pragmatic_testing.Database;
 
 namespace Infra_pragmatic_testing.Repositories
 {
-	public class PasswordHistoryRespository : IPasswordHistoryRespository
+	public class PasswordHistoryRespository : IPasswordHistoryRepository
 	{
 		public PasswordHistory GetPasswordHistory(string userName)
 		{

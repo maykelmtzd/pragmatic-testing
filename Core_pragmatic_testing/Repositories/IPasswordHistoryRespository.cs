@@ -5,7 +5,7 @@ using Core_pragmatic_testing.Entities;
 
 namespace Core_pragmatic_testing.Repositories
 {
-	public interface IPasswordHistoryRespository
+	public interface IPasswordHistoryRepository
 	{
 		PasswordHistory GetPasswordHistory(string userName);
 	}

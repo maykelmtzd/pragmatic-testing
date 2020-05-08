@@ -26,7 +26,7 @@ namespace Core_pragmatic_testing.Entities
 		public string UserName { get; private set; }
 
 		//We could change this to apply the rules when creating the password: Password.Create(newPassword)
-		// There are rules that depend on passwordCreationTime so not all could be apply at Password.Create(newPassword)
+		//There are rules that depend on old passwords creation time(createdAt field on Password obj) so not all could be apply at Password.Create(newPassword)
 		public bool CreateNewPassword(Password newPassword, bool isHighProfileUser)
 		{
 			var passwordRules = _passwordRulesFactory.CreatePasswordRules(isHighProfileUser);
