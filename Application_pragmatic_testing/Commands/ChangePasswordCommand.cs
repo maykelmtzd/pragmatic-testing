@@ -62,15 +62,29 @@ namespace Application_pragmatic_testing.Commands
 				//Load domain object(usually aggregate) in memory
 				var passwordHistory = _passwordHistoryRepo.GetPasswordHistory(userName);
 
-				//Call operation on aggregate which mutate some state.
+				//Call operation on aggregate which mutates some state.
 				var wasPasswordChanged = passwordHistory.CreateNewPassword(newPassword, isHighProfileUser);
 
+				if (wasPasswordChanged)
+				{
+					//this could through an exception, see comments on UpdatePasswordHistory method.
+					_passwordHistoryRepo.UpdatePasswordHistory(passwordHistory);
 
+					//log the aggregate was saved
+
+					//eventGridService.PublishPasswordChangedEvent(userName, newPassword);
+
+					return new ChangePasswordResponse()
+					{
+						UserName = command.ChangePasswordDto.UserName,
+						Success = true
+					};
+				}
 
 				return new ChangePasswordResponse()
 				{
 					UserName = command.ChangePasswordDto.UserName,
-					Success = true
+					Success = false
 				};
 			}
 		}

@@ -8,5 +8,7 @@ namespace Core_pragmatic_testing.Repositories
 	public interface IPasswordHistoryRepository
 	{
 		PasswordHistory GetPasswordHistory(string userName);
+
+		void UpdatePasswordHistory(PasswordHistory passwordHistory);
 	}
 }

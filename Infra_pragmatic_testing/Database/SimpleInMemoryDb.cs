@@ -8,15 +8,14 @@ namespace Infra_pragmatic_testing.Database
 {
 	public static class SimpleInMemoryDb
 	{
-		public static bool AddPasswordHistory(PasswordHistory passwordHistory)
+		public static void AddPasswordHistory(PasswordHistory passwordHistory)
 		{
 			if (!_passwordHistories.ContainsKey(passwordHistory.UserName))
 			{
 				_passwordHistories.Add(passwordHistory.UserName, passwordHistory);
-				return true;
 			}
 				
-			return false;
+			throw new Exception("Db exception, Detailed Message: Key already exist");
 		}
 
 		public static PasswordHistory GetPasswordHistory(string userName)
@@ -27,26 +26,24 @@ namespace Infra_pragmatic_testing.Database
 			return null;
 		}
 
-		public static bool UpdatePasswordHistory(PasswordHistory passwordHistory)
+		public static void UpdatePasswordHistory(PasswordHistory passwordHistory)
 		{
 			if (_passwordHistories.ContainsKey(passwordHistory.UserName))
 			{
 				_passwordHistories[passwordHistory.UserName] = passwordHistory;
-				return true;
 			}
 
-			return false;
+			throw new Exception("Db exception, Detailed Message: PasswordHistory not found");
 		}
 
-		public static bool DeletePasswordHistory(string userName)
+		public static void DeletePasswordHistory(string userName)
 		{
 			if (_passwordHistories.ContainsKey(userName))
 			{
 				_passwordHistories.Remove(userName);
-				return true;
 			}
 
-			return false;
+			throw new Exception("Db exception, Detailed Message: PasswordHistory not found");
 		}
 
 		private static Dictionary<string, PasswordHistory> _passwordHistories = new Dictionary<string, PasswordHistory>()
