@@ -8,6 +8,9 @@ using Application_pragmatic_testing.ExternalServices;
 using Application_pragmatic_testing.Responses;
 using Core_pragmatic_testing.Entities;
 using Core_pragmatic_testing.Repositories;
+using Infra_pragmatic_testing.Constants;
+using Infra_pragmatic_testing.ExternalEvents;
+using Infra_pragmatic_testing.Services;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -24,35 +27,24 @@ namespace Application_pragmatic_testing.Commands
 
 		public class ChangePasswordHandler : RequestHandler<ChangePasswordCommand, ChangePasswordResponse>
 		{
-			private readonly ILogger<ChangePasswordHandler> _logger;
 			private readonly ICredentialService _credentialService;
 			private readonly IPasswordHistoryRepository _passwordHistoryRepo;
+			private readonly ILogger<ChangePasswordHandler> _logger;
+			private readonly ExternalEventPublisherServ _externalEventPublisherServ;
 
-			public ChangePasswordHandler(ICredentialService credentialService, IPasswordHistoryRepository passwordHistoryRepo)
+			public ChangePasswordHandler(ICredentialService credentialService, 
+				IPasswordHistoryRepository passwordHistoryRepo,
+				ILogger<ChangePasswordHandler> logger,
+				ExternalEventPublisherServ externalEventPublisherServ)
 			{
 				_credentialService = credentialService;
 				_passwordHistoryRepo = passwordHistoryRepo;
+				_logger = logger;
+				_externalEventPublisherServ = externalEventPublisherServ;
 			}
 
 			protected override ChangePasswordResponse Handle(ChangePasswordCommand command)
 			{
-				// Make some call to Credential service. Maybe to get some result that I could pass to the domain object, like isHighProfileUser.
-
-				// User repo to load PasswordManagerObject who has a list of oldPassword and a list of rules for the newPassword to comply with.
-
-				// Make call to passwordHistoryObject passing isHighProfileUser to determine if password can be change.
-
-				// If it can be changed, call Credential service ChangePasswordMethod
-
-				// if passwordChanged call save in the DB
-
-				// Logging, should I use logger in the command or use the logger in each service.
-
-				// raise the event passwordChanged, or just call a service (eventPublisher) that publishes the event.
-				// The EventPublisher would have the real EventGridClient third party class  wrapped in a Gateway class.
-
-
-
 				//Translate Dto  information into Domain objects format(Some form of validation takes place).
 				var userName = command.ChangePasswordDto.UserName;
 				var newPassword = new Password(command.ChangePasswordDto.NewPassword);
@@ -74,7 +66,24 @@ namespace Application_pragmatic_testing.Commands
 					//log the aggregate was saved
 					_logger.LogInformation($"New password for user {userName} was saved");
 
-					//eventGridService.PublishPasswordChangedEvent(userName, newPassword);
+					#region IMS comments
+					//We don't need to:
+					//1- The aggregate wraps itself in a domain event
+
+					//2- The handler maps the aggregate in the domain event to an specific parameter (Dto?) for ExternalEventPublisherServ (EventGridService)
+
+					//3- The ExternalEventPublisherServ maps the parameter (Dto?) into a more valuable Dto that specify the data contract with 
+					//the outer world(EventGrid in this case)
+
+					//4- The ExternalEventPublisherServ uses a third party library client (EventGridClient) to send the event out. No wrapper on the client
+					// is used. Don't mock what you don't own: https://github.com/testdouble/contributing-tests/wiki/Don't-mock-what-you-don't-own
+
+					//eventGridService.PublishPasswordChangedEvent(userName, newPassword); 
+					#endregion
+
+					var passwordChangedExternalEvent = PasswordChangedData.CreateExternalEvent(userName, newPassword);
+
+					_externalEventPublisherServ.PublishAsync(passwordChangedExternalEvent);
 
 					return new ChangePasswordResponse()
 					{

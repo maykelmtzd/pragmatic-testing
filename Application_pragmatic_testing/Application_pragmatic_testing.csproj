@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core_pragmatic_testing\Core_pragmatic_testing.csproj" />
+    <ProjectReference Include="..\Infra_pragmatic_testing\Infra_pragmatic_testing.csproj" />
   </ItemGroup>
 
 </Project>
