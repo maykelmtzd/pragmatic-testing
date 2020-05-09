@@ -9,6 +9,7 @@ using Application_pragmatic_testing.Responses;
 using Core_pragmatic_testing.Entities;
 using Core_pragmatic_testing.Repositories;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application_pragmatic_testing.Commands
 {
@@ -23,7 +24,7 @@ namespace Application_pragmatic_testing.Commands
 
 		public class ChangePasswordHandler : RequestHandler<ChangePasswordCommand, ChangePasswordResponse>
 		{
-
+			private readonly ILogger<ChangePasswordHandler> _logger;
 			private readonly ICredentialService _credentialService;
 			private readonly IPasswordHistoryRepository _passwordHistoryRepo;
 
@@ -71,6 +72,7 @@ namespace Application_pragmatic_testing.Commands
 					_passwordHistoryRepo.UpdatePasswordHistory(passwordHistory);
 
 					//log the aggregate was saved
+					_logger.LogInformation($"New password for user {userName} was saved");
 
 					//eventGridService.PublishPasswordChangedEvent(userName, newPassword);
 
