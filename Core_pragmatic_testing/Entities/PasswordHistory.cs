@@ -43,7 +43,7 @@ namespace Core_pragmatic_testing.Entities
 
 		private bool PasswordWasNotPreviouslyUsed(Password newPassword)
 		{
-			return !_previousPasswords.Contains(newPassword);
+			return _currentPassword != newPassword && !_previousPasswords.Contains(newPassword);
 		}
 
 		private bool AllRulesComply(Password newPassword, IReadOnlyList<IPasswordRule> passwordRules)

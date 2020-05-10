@@ -5,11 +5,17 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api_pragmatic_testing", "Api_pragmatic_testing\Api_pragmatic_testing.csproj", "{31722FA7-7BFC-4881-8DB7-2D03B5D7EC18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application_pragmatic_testing", "Application_pragmatic_testing\Application_pragmatic_testing.csproj", "{C81C0025-A567-40F5-A291-5FB5C5188AC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application_pragmatic_testing", "Application_pragmatic_testing\Application_pragmatic_testing.csproj", "{C81C0025-A567-40F5-A291-5FB5C5188AC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core_pragmatic_testing", "Core_pragmatic_testing\Core_pragmatic_testing.csproj", "{CA7E8BEF-0455-4A08-918E-CB0D8E25B625}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core_pragmatic_testing", "Core_pragmatic_testing\Core_pragmatic_testing.csproj", "{CA7E8BEF-0455-4A08-918E-CB0D8E25B625}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra_pragmatic_testing", "Infra_pragmatic_testing\Infra_pragmatic_testing.csproj", "{EE1483FC-71F2-4F3F-A7E0-BA1ED8736BFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra_pragmatic_testing", "Infra_pragmatic_testing\Infra_pragmatic_testing.csproj", "{EE1483FC-71F2-4F3F-A7E0-BA1ED8736BFC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BF04F839-6D1A-4BAE-89FE-94739D796C98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application_pragmatic_testing_tests", "Tests\Application_pragmatic_testing_tests\Application_pragmatic_testing_tests.csproj", "{B60C5BEE-09F1-4ECB-8442-578CA93DB62D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core_pragmatic__testing_tests", "Tests\Core_pragmatic__testing_tests\Core_pragmatic__testing_tests.csproj", "{248136E7-D924-43B9-A6A7-3C6B463DB4F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +39,21 @@ Global
 		{EE1483FC-71F2-4F3F-A7E0-BA1ED8736BFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE1483FC-71F2-4F3F-A7E0-BA1ED8736BFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE1483FC-71F2-4F3F-A7E0-BA1ED8736BFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B60C5BEE-09F1-4ECB-8442-578CA93DB62D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B60C5BEE-09F1-4ECB-8442-578CA93DB62D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B60C5BEE-09F1-4ECB-8442-578CA93DB62D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B60C5BEE-09F1-4ECB-8442-578CA93DB62D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{248136E7-D924-43B9-A6A7-3C6B463DB4F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{248136E7-D924-43B9-A6A7-3C6B463DB4F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{248136E7-D924-43B9-A6A7-3C6B463DB4F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{248136E7-D924-43B9-A6A7-3C6B463DB4F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B60C5BEE-09F1-4ECB-8442-578CA93DB62D} = {BF04F839-6D1A-4BAE-89FE-94739D796C98}
+		{248136E7-D924-43B9-A6A7-3C6B463DB4F2} = {BF04F839-6D1A-4BAE-89FE-94739D796C98}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {05A885AD-9855-42AE-BF44-9056C5018FC5}
