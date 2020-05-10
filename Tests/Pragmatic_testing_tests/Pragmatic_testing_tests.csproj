@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Application\TestsToConsider\" />
-    <Folder Include="API\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Api_pragmatic_testing\Api_pragmatic_testing.csproj" />
     <ProjectReference Include="..\..\Application_pragmatic_testing\Application_pragmatic_testing.csproj" />
   </ItemGroup>
 
