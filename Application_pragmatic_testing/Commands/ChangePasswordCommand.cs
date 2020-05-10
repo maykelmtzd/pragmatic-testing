@@ -25,17 +25,22 @@ namespace Application_pragmatic_testing.Commands
 
 		public ChangePasswordDto ChangePasswordDto { get; }
 
-		public class ChangePasswordHandler : RequestHandler<ChangePasswordCommand, ChangePasswordResponse>
+		public class ChangePasswordHandler : IRequestHandler<ChangePasswordCommand, ChangePasswordResponse>
 		{
+			//ICredentialService is a valuable interface because represent a third party service, it's at the edge of the microservice.
 			private readonly ICredentialService _credentialService;
+
+			//IExternalEventPublisherServ is NOT valuable, it's an internal service, not at the end of the system. It only has one concrete implementation.
+			private readonly IExternalEventPublisherServ _externalEventPublisherServ;
+
 			private readonly IPasswordHistoryRepository _passwordHistoryRepo;
 			private readonly ILogger<ChangePasswordHandler> _logger;
-			private readonly ExternalEventPublisherServ _externalEventPublisherServ;
+			
 
 			public ChangePasswordHandler(ICredentialService credentialService, 
 				IPasswordHistoryRepository passwordHistoryRepo,
 				ILogger<ChangePasswordHandler> logger,
-				ExternalEventPublisherServ externalEventPublisherServ)
+				IExternalEventPublisherServ externalEventPublisherServ)
 			{
 				_credentialService = credentialService;
 				_passwordHistoryRepo = passwordHistoryRepo;
@@ -43,7 +48,13 @@ namespace Application_pragmatic_testing.Commands
 				_externalEventPublisherServ = externalEventPublisherServ;
 			}
 
-			protected override ChangePasswordResponse Handle(ChangePasswordCommand command)
+			/// <summary>
+			/// The Handler method was not defined as async just to remove some complexity which is not very relevant 
+			/// for showing when unit tests are or are not valuable.
+			/// </summary>
+			/// <param name="command"></param>
+			/// <returns></returns>
+			public async Task<ChangePasswordResponse> Handle(ChangePasswordCommand command, CancellationToken cancellationToken)
 			{
 				//Translate Dto  information into Domain objects format(Some form of validation takes place).
 				var userName = command.ChangePasswordDto.UserName;
@@ -56,6 +67,9 @@ namespace Application_pragmatic_testing.Commands
 				var passwordHistory = _passwordHistoryRepo.GetPasswordHistory(userName);
 
 				//Call operation on aggregate which mutates some state.
+				//Use strategy pattern: Pass the isHighProfile to the repo so the passwordHistory is created
+				//with the right object, HightProfileUserRulesFactory or RegularUserRulesFactory.
+				// I could add another object that perform some algorithm and only has on concrete implementation. FindPlainEnglishWords()
 				var wasPasswordChanged = passwordHistory.CreateNewPassword(newPassword, isHighProfileUser);
 
 				if (wasPasswordChanged)

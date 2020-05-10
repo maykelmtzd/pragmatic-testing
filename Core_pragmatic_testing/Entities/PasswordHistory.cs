@@ -25,8 +25,14 @@ namespace Core_pragmatic_testing.Entities
 
 		public string UserName { get; private set; }
 
-		//We could change this to apply the rules when creating the password: Password.Create(newPassword)
-		//There are rules that depend on old passwords creation time(createdAt field on Password obj) so not all could be apply at Password.Create(newPassword)
+		/// <summary>
+		/// We could change this to apply the rules when creating the password: Password.Create(newPassword) 
+		/// There are rules that depend on previous  passwords creation time(createdAt field on Password obj) so not all could be apply at Password.Create(newPassword)
+		/// We could validate that the current password in Dto is equal to the current one coming from the DB
+		/// </summary>
+		/// <param name="newPassword"></param>
+		/// <param name="isHighProfileUser"></param>
+		/// <returns></returns>
 		public bool CreateNewPassword(Password newPassword, bool isHighProfileUser)
 		{
 			var passwordRules = _passwordRulesFactory.CreatePasswordRules(isHighProfileUser);

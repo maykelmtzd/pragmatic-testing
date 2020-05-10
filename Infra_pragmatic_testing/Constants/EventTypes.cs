@@ -6,6 +6,6 @@ namespace Infra_pragmatic_testing.Constants
 {
     public static class EventTypes
     {
-        public static string InvoiceHeaderAccepted = "Invoice header was accepted";
+        public static string PasswordChanged = "Password was changed";
     }
 }

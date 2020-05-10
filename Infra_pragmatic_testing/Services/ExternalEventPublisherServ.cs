@@ -11,20 +11,29 @@ using Polly.Retry;
 
 namespace Infra_pragmatic_testing.Services
 {
-	public class ExternalEventPublisherServ
-	{
-		private readonly EventGridGateway _eventGridGateway;
-		private readonly IOptions<EventGridSettings> _eventGridSettings;
-		private readonly AsyncRetryPolicy _retryPolicy;
-		private readonly ILogger _logger;
+    /// <summary>
+    /// This interface(IExternalEventPublisherServ) is not necessary. Why:
+    /// 
+    /// 1- It's not at the edge of the hexagon/microservice. We don't need to mock it, it's an implementation detail.
+    /// IEventGridGateway is a valuable interface, it's at the very edge of the microservice.
+    /// 
+    /// 2- We don't have more than one concrete implementation for it. So it's just a header interface.
+    /// </summary>
+    public class ExternalEventPublisherServ : IExternalEventPublisherServ
+    {
+        private readonly IEventGridGateway _eventGridGateway;
+        private readonly IOptions<EventGridSettings> _eventGridSettings;
+        private readonly AsyncRetryPolicy _retryPolicy;
+        private readonly ILogger _logger;
 
-		public ExternalEventPublisherServ(EventGridGateway eventGridGateway, IOptions<EventGridSettings> eventGridSettings, AsyncRetryPolicy retryPolicy, ILogger logger)
-		{
-			_eventGridGateway = eventGridGateway;
-			_eventGridSettings = eventGridSettings;
-			_retryPolicy = retryPolicy;
-			_logger = logger;
-		}
+        public ExternalEventPublisherServ(IEventGridGateway eventGridGateway, IOptions
+            <EventGridSettings> eventGridSettings, AsyncRetryPolicy retryPolicy, ILogger logger)
+        {
+            _eventGridGateway = eventGridGateway;
+            _eventGridSettings = eventGridSettings;
+            _retryPolicy = retryPolicy;
+            _logger = logger;
+        }
 
         public async void PublishAsync(ExternalEvent externalEvent)
         {

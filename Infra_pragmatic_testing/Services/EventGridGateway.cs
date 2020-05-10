@@ -12,7 +12,7 @@ namespace Infra_pragmatic_testing.Services
 	/// Creates a wrapper over a third party library client.
 	/// Don't mock what you don't own: https://github.com/testdouble/contributing-tests/wiki/Don't-mock-what-you-don't-own
 	/// </summary>
-	public class EventGridGateway
+	public class EventGridGateway : IEventGridGateway
 	{
 		private readonly EventGridClient _eventGridClient;
 

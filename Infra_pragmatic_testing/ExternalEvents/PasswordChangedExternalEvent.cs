@@ -22,7 +22,7 @@ namespace Infra_pragmatic_testing.ExternalEvents
 					NewPassword = newPassword.PasswordText
 				},
 				DataVersion = dataVersion,
-				EventType = EventTypes.InvoiceHeaderAccepted
+				EventType = EventTypes.PasswordChanged
 			};
 		}
 	}
