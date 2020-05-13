@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Infra_pragmatic_testing.Configurations;
 using Infra_pragmatic_testing.ExternalEvents;
 using Microsoft.Azure.EventGrid.Models;
@@ -26,8 +27,8 @@ namespace Infra_pragmatic_testing.Services
         private readonly AsyncRetryPolicy _retryPolicy;
         private readonly ILogger _logger;
 
-        public ExternalEventPublisherServ(IEventGridGateway eventGridGateway, IOptions
-            <EventGridSettings> eventGridSettings, AsyncRetryPolicy retryPolicy, ILogger logger)
+        public ExternalEventPublisherServ(IEventGridGateway eventGridGateway, 
+            IOptions<EventGridSettings> eventGridSettings, AsyncRetryPolicy retryPolicy, ILogger logger)
         {
             _eventGridGateway = eventGridGateway;
             _eventGridSettings = eventGridSettings;
@@ -35,7 +36,7 @@ namespace Infra_pragmatic_testing.Services
             _logger = logger;
         }
 
-        public async void PublishAsync(ExternalEvent externalEvent)
+        public async Task PublishAsync(ExternalEvent externalEvent)
         {
             var eventGridEvent = MapToEventGridEvent(externalEvent);
             try
@@ -53,6 +54,7 @@ namespace Infra_pragmatic_testing.Services
             catch (Exception ex)
             {
                 _logger.LogError("Exception while publishing to event grid", ex);
+                throw;
             }
         }
 

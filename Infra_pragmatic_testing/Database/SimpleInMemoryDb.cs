@@ -6,19 +6,20 @@ using Core_pragmatic_testing.Factories;
 
 namespace Infra_pragmatic_testing.Database
 {
-	public static class SimpleInMemoryDb
+	public class SimpleInMemoryDb : ISimpleInMemoryDb
 	{
-		public static void AddPasswordHistory(PasswordHistory passwordHistory)
+		public void AddPasswordHistoryDto(PasswordHistoryDto passwordHistory)
 		{
 			if (!_passwordHistories.ContainsKey(passwordHistory.UserName))
 			{
 				_passwordHistories.Add(passwordHistory.UserName, passwordHistory);
+				return;
 			}
-				
+
 			throw new Exception("Db exception, Detailed Message: Key already exist");
 		}
 
-		public static PasswordHistory GetPasswordHistory(string userName)
+		public PasswordHistoryDto GetPasswordHistoryDto(string userName)
 		{
 			if (_passwordHistories.ContainsKey(userName))
 				return _passwordHistories[userName];
@@ -26,56 +27,72 @@ namespace Infra_pragmatic_testing.Database
 			return null;
 		}
 
-		public static void UpdatePasswordHistory(PasswordHistory passwordHistory)
+		public void UpdatePasswordHistoryDto(PasswordHistoryDto passwordHistory)
 		{
 			if (_passwordHistories.ContainsKey(passwordHistory.UserName))
 			{
 				_passwordHistories[passwordHistory.UserName] = passwordHistory;
+				return;
 			}
 
 			throw new Exception("Db exception, Detailed Message: PasswordHistory not found");
 		}
 
-		public static void DeletePasswordHistory(string userName)
+		public void DeletePasswordHistoryDto(string userName)
 		{
 			if (_passwordHistories.ContainsKey(userName))
 			{
 				_passwordHistories.Remove(userName);
+				return;
 			}
 
 			throw new Exception("Db exception, Detailed Message: PasswordHistory not found");
 		}
 
-		private static Dictionary<string, PasswordHistory> _passwordHistories = new Dictionary<string, PasswordHistory>()
+		public static SimpleInMemoryDb InitializeDbWithDefaultSeedData()
 		{
-			{
-				"UserName1",
-				new PasswordHistory(
-				"UserName1",
-				new Password("password3"),
-				new List<Password>() { new Password("password1"), new Password("password2") },
-				new PasswordRulesFactory()
-				)
-			},
-			{
-				"UserName2",
-				new PasswordHistory(
-				"UserName2",
-				new Password("passwordC"),
-				new List<Password>() { new Password("passwordA"), new Password("passwordB") },
-				new PasswordRulesFactory()
-				)
-			},
-			{
-				"UserName3",
-				new PasswordHistory(
-				"UserName3",
-				new Password("password3"),
-				new List<Password>() { new Password("password1"), new Password("password2") },
-				new PasswordRulesFactory()
-				)
-			}
-		};
+			return new SimpleInMemoryDb();
+		}
 
+		public SimpleInMemoryDb(Dictionary<string, PasswordHistoryDto> dbSeedData)
+		{
+			_passwordHistories = dbSeedData;
+		}
+
+		private Dictionary<string, PasswordHistoryDto> _passwordHistories;
+
+		private SimpleInMemoryDb()
+		{
+			_passwordHistories = new Dictionary<string, PasswordHistoryDto>()
+			{
+				{
+					"UserName1",
+					new PasswordHistoryDto
+					{
+						UserName = "UserName1",
+						CurrentPassword = "password3",
+						PreviousPasswords = new List<string>() { "password1", "password2" }
+					}
+				},
+				{
+					"UserName2",
+					new PasswordHistoryDto
+					{
+						UserName = "UserName2",
+						CurrentPassword = "passwordC",
+						PreviousPasswords = new List<string>() { "passwordA", "passwordB" }
+					}
+				},
+				{
+					"UserName3",
+					new PasswordHistoryDto
+					{
+						UserName = "UserName3",
+						CurrentPassword = "password3",
+						PreviousPasswords = new List<string>() { "password1", "password2" }
+					}
+				}
+			};
+		}
 	}
 }

@@ -8,8 +8,6 @@ namespace Core_pragmatic_testing.Entities
 {
 	public class PasswordHistory
 	{
-		private Password _currentPassword;
-		private readonly List<Password> _previousPasswords;
 		private readonly IPasswordRulesFactory _passwordRulesFactory;
 
 		public PasswordHistory(string userName,
@@ -18,12 +16,17 @@ namespace Core_pragmatic_testing.Entities
 			IPasswordRulesFactory passwordRulesFactory)
 		{
 			UserName = userName;
-			_currentPassword = currentPassword;
-			_previousPasswords = previousPasswords;
+			CurrentPassword = currentPassword;
+			PreviousPasswords = previousPasswords;
 			_passwordRulesFactory = passwordRulesFactory;
 		}
 
 		public string UserName { get; private set; }
+
+		public Password CurrentPassword { get; private set; }
+
+		public List<Password> PreviousPasswords { get; private set; }
+
 
 		/// <summary>
 		/// We could change this to apply the rules when creating the password: Password.Create(newPassword) 
@@ -39,8 +42,8 @@ namespace Core_pragmatic_testing.Entities
 
 			if (PasswordWasNotPreviouslyUsed(newPassword) && AllRulesComply(newPassword, passwordRules))
 			{
-				_previousPasswords.Add(_currentPassword);
-				_currentPassword = newPassword;
+				PreviousPasswords.Add(CurrentPassword);
+				CurrentPassword = newPassword;
 				return true;
 			}
 
@@ -49,7 +52,7 @@ namespace Core_pragmatic_testing.Entities
 
 		private bool PasswordWasNotPreviouslyUsed(Password newPassword)
 		{
-			return _currentPassword != newPassword && !_previousPasswords.Contains(newPassword);
+			return CurrentPassword != newPassword && !PreviousPasswords.Contains(newPassword);
 		}
 
 		private bool AllRulesComply(Password newPassword, IReadOnlyList<IPasswordRule> passwordRules)

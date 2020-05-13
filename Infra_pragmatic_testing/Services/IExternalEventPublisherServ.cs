@@ -1,4 +1,5 @@
-﻿using Infra_pragmatic_testing.ExternalEvents;
+﻿using System.Threading.Tasks;
+using Infra_pragmatic_testing.ExternalEvents;
 
 namespace Infra_pragmatic_testing.Services
 {
@@ -12,6 +13,6 @@ namespace Infra_pragmatic_testing.Services
     /// </summary>
     public interface IExternalEventPublisherServ
 	{
-		void PublishAsync(ExternalEvent externalEvent);
+		Task PublishAsync(ExternalEvent externalEvent);
 	}
 }

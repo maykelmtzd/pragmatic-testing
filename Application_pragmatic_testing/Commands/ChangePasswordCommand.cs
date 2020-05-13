@@ -97,7 +97,7 @@ namespace Application_pragmatic_testing.Commands
 
 					var passwordChangedExternalEvent = PasswordChangedData.CreateExternalEvent(userName, newPassword);
 
-					_externalEventPublisherServ.PublishAsync(passwordChangedExternalEvent);
+					await _externalEventPublisherServ.PublishAsync(passwordChangedExternalEvent);
 
 					return new ChangePasswordResponse()
 					{
