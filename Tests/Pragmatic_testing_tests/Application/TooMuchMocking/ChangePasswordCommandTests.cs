@@ -7,8 +7,11 @@ using Application_pragmatic_testing.Commands;
 using Application_pragmatic_testing.Dtos;
 using Application_pragmatic_testing.ExternalServices;
 using Application_pragmatic_testing.Responses;
+using Core_pragmatic_testing.Entities;
 using Core_pragmatic_testing.Repositories;
 using FluentAssertions;
+using Infra_pragmatic_testing.Constants;
+using Infra_pragmatic_testing.ExternalEvents;
 using Infra_pragmatic_testing.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -36,7 +39,7 @@ namespace Pragmatic_testing_tests.Application.TooMuchMocking
 		}
 
 		[Fact]
-		public async Task When_change_password_handler_receive_a_valid_dto_and_it_complies_with_business_rules_it_returns_success_and_response_body()
+		public async Task When_change_password_handler_receive_a_valid_dto_and_it_complies_with_business_rules_it_returns_success_and_response_body_and_publishes()
 		{
 			var changePasswordDto = new ChangePasswordDto()
 			{
@@ -55,12 +58,21 @@ namespace Pragmatic_testing_tests.Application.TooMuchMocking
 
 			var changePasswordResponse = await _changePasswordHandler.Handle(changePasswordCommand, CancellationToken.None);
 
+			var passwordChangedExternalEvent = PasswordChangedData.CreateExternalEvent
+				(
+					changePasswordDto.UserName, new Password(changePasswordDto.NewPassword)
+				);
+
+			//It's better to pass the specific paramenter and not use It.IsAny<ExternalEvent>()
+			//_externalEventPublisher.Verify(mock => mock.PublishAsync(It.IsAny<ExternalEvent>()));
+			_externalEventPublisher.Verify(publisher => publisher.PublishAsync(passwordChangedExternalEvent));
+
 			changePasswordResponse.UserName.Should().Be(changePasswordDto.UserName);
 			changePasswordResponse.Success.Should().BeTrue();
 		}
 
 		[Fact]
-		public async Task When_change_password_handler_receive_a_valid_dto_and_it_does_not_comply_with_business_rules_it_returns_failure_and_response_body()
+		public async Task When_change_password_handler_receive_a_valid_dto_and_it_does_not_comply_with_business_rules_it_returns_failure_and_response_body_and_does_not_publish()
 		{
 			//This requires better use of builders or fixtures, the property values for the Dto should be in one place
 			//So they match in all tests.
@@ -80,6 +92,8 @@ namespace Pragmatic_testing_tests.Application.TooMuchMocking
 				);
 
 			var changePasswordResponse = await _changePasswordHandler.Handle(changePasswordCommand, CancellationToken.None);
+
+			_externalEventPublisher.Verify(publisher => publisher.PublishAsync(It.IsAny<ExternalEvent>()), Times.Never);
 
 			changePasswordResponse.UserName.Should().Be(changePasswordDto.UserName);
 			changePasswordResponse.Success.Should().BeFalse();
