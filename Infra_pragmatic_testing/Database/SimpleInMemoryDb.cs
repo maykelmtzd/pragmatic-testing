@@ -70,8 +70,12 @@ namespace Infra_pragmatic_testing.Database
 					new PasswordHistoryDto
 					{
 						UserName = "UserName1",
-						CurrentPassword = "password3",
-						PreviousPasswords = new List<string>() { "password1", "password2" }
+						CurrentPassword = ("password3", new DateTime(2020, 3, 3)),
+						PreviousPasswords = new List<(string, DateTime)>()
+						{
+							("password1", new DateTime(2019, 10, 10)),
+							("password2", new DateTime(2019, 12, 12))
+						}
 					}
 				},
 				{
@@ -79,8 +83,8 @@ namespace Infra_pragmatic_testing.Database
 					new PasswordHistoryDto
 					{
 						UserName = "UserName2",
-						CurrentPassword = "passwordC",
-						PreviousPasswords = new List<string>() { "passwordA", "passwordB" }
+						CurrentPassword = ("passwordC", new DateTime(2020, 3, 3)),
+						PreviousPasswords = new List<(string, DateTime)>() { ("passwordA", new DateTime(2019, 10, 10)), ("passwordB", new DateTime(2019, 12, 12)) }
 					}
 				},
 				{
@@ -88,8 +92,12 @@ namespace Infra_pragmatic_testing.Database
 					new PasswordHistoryDto
 					{
 						UserName = "UserName3",
-						CurrentPassword = "password3",
-						PreviousPasswords = new List<string>() { "password1", "password2" }
+						CurrentPassword = ("password3", new DateTime(2020, 3, 3)),
+						PreviousPasswords = new List<(string, DateTime)>()
+						{
+							("password1", new DateTime(2019, 10, 10)),
+							("password2", new DateTime(2019, 12, 12))
+						}
 					}
 				}
 			};

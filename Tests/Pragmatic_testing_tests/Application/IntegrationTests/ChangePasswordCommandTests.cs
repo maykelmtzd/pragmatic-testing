@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -118,8 +119,8 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 
 
 			savedPasswordHistoryDto.UserName.Should().Be(changePasswordCommandDto.UserName);
-			savedPasswordHistoryDto.CurrentPassword.Should().Be(changePasswordCommandDto.NewPassword);
-			savedPasswordHistoryDto.PreviousPasswords.Should().BeEquivalentTo(new List<string> { "password1", "password2", "password3" });
+			savedPasswordHistoryDto.CurrentPassword.Item1.Should().Be(changePasswordCommandDto.NewPassword);
+			savedPasswordHistoryDto.PreviousPasswords.Select(t => t.Item1).Should().BeEquivalentTo(new List<string> { "password1", "password2", "password3" });
 		}
 
 		/// <summary>
@@ -157,8 +158,8 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 
 
 			savedPasswordHistoryDto.UserName.Should().Be(userName);
-			savedPasswordHistoryDto.CurrentPassword.Should().Be("password3");
-			savedPasswordHistoryDto.PreviousPasswords.Should().BeEquivalentTo(new List<string> { "password1", "password2" });
+			savedPasswordHistoryDto.CurrentPassword.Item1.Should().Be("password3");
+			savedPasswordHistoryDto.PreviousPasswords.Select(t => t.Item1).Should().BeEquivalentTo(new List<string> { "password1", "password2" });
 		}
 	}
 }

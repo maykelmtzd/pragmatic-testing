@@ -44,8 +44,8 @@ namespace Infra_pragmatic_testing.Repositories
 			return new PasswordHistoryDto()
 			{
 				UserName = passwordHistory.UserName,
-				CurrentPassword = passwordHistory.CurrentPassword.PasswordText,
-				PreviousPasswords = passwordHistory.PreviousPasswords.Select(psw => psw.PasswordText).ToList()
+				CurrentPassword = (passwordHistory.CurrentPassword.PasswordText, passwordHistory.CurrentPassword.CreatedAt),
+				PreviousPasswords = passwordHistory.PreviousPasswords.Select(psw => (psw.PasswordText, psw.CreatedAt)).ToList()
 			};
 		}
 
@@ -54,10 +54,10 @@ namespace Infra_pragmatic_testing.Repositories
 			return new PasswordHistory
 				(
 					userName: passwordHistoryDto.UserName,
-					currentPassword: new Password(passwordHistoryDto.CurrentPassword),
-					previousPasswords: passwordHistoryDto.PreviousPasswords.Select(strPsw => new Password(strPsw)).ToList(),
+					currentPassword: new Password(passwordHistoryDto.CurrentPassword.Item1, passwordHistoryDto.CurrentPassword.Item2),
+					previousPasswords: passwordHistoryDto.PreviousPasswords.Select(psw => new Password(psw.Item1, psw.Item2)).ToList(),
 					_passwordRulesFactory.CreatePasswordRules(isHighProfileUser)
-				); ;
+				);
 		}
 	}
 }
