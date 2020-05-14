@@ -7,7 +7,7 @@ namespace Core_pragmatic_testing.Repositories
 {
 	public interface IPasswordHistoryRepository
 	{
-		PasswordHistory GetPasswordHistory(string userName);
+		PasswordHistory GetPasswordHistory(string userName, bool isHighProfileUser);
 
 		void UpdatePasswordHistory(PasswordHistory passwordHistory);
 	}

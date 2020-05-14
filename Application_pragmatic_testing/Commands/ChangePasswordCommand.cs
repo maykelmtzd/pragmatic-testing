@@ -64,13 +64,13 @@ namespace Application_pragmatic_testing.Commands
 				var isHighProfileUser = _userBehaviourService.IsHighProfileUser(userName);
 
 				//Load domain object(usually aggregate) in memory
-				var passwordHistory = _passwordHistoryRepo.GetPasswordHistory(userName);
+				var passwordHistory = _passwordHistoryRepo.GetPasswordHistory(userName, isHighProfileUser);
 
 				//Call operation on aggregate which mutates some state.
 				//Use strategy pattern: Pass the isHighProfile to the repo so the passwordHistory is created
 				//with the right object, HightProfileUserRulesFactory or RegularUserRulesFactory.
 				// I could add another object that perform some algorithm and only has on concrete implementation. FindPlainEnglishWords()
-				var wasPasswordChanged = passwordHistory.CreateNewPassword(newPassword, isHighProfileUser);
+				var wasPasswordChanged = passwordHistory.CreateNewPassword(newPassword);
 
 				if (wasPasswordChanged)
 				{

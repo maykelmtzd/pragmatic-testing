@@ -7,6 +7,7 @@ using Application_pragmatic_testing.Commands;
 using Application_pragmatic_testing.Dtos;
 using Application_pragmatic_testing.ExternalServices;
 using Core_pragmatic_testing.Entities;
+using Core_pragmatic_testing.Factories;
 using Core_pragmatic_testing.Repositories;
 using FluentAssertions;
 using Infra_pragmatic_testing.Configurations;
@@ -42,7 +43,7 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 			_credentialService = new Mock<IUserBehaviourService>();
 
 			_simpleInMemoryDb = SimpleInMemoryDb.InitializeDbWithDefaultSeedData();
-			_passwordHistoryRepo = new PasswordHistoryRespository(_simpleInMemoryDb);
+			_passwordHistoryRepo = new PasswordHistoryRespository(_simpleInMemoryDb, new PasswordRulesFactory());
 
 			_logger = new Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>>();
 			_eventGridGateway = new Mock<IEventGridGateway>();

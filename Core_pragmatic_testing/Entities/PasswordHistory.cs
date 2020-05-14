@@ -8,25 +8,21 @@ namespace Core_pragmatic_testing.Entities
 {
 	public class PasswordHistory
 	{
-		private readonly IPasswordRulesFactory _passwordRulesFactory;
+		public string UserName { get; private set; }
+		public Password CurrentPassword { get; private set; }
+		public List<Password> PreviousPasswords { get; private set; }
+		public IReadOnlyList<IPasswordRule> PasswordRules { get; private set; }
 
 		public PasswordHistory(string userName,
 			Password currentPassword,
 			List<Password> previousPasswords,
-			IPasswordRulesFactory passwordRulesFactory)
+			IReadOnlyList<IPasswordRule> passwordRules)
 		{
 			UserName = userName;
 			CurrentPassword = currentPassword;
 			PreviousPasswords = previousPasswords;
-			_passwordRulesFactory = passwordRulesFactory;
+			PasswordRules = passwordRules;
 		}
-
-		public string UserName { get; private set; }
-
-		public Password CurrentPassword { get; private set; }
-
-		public List<Password> PreviousPasswords { get; private set; }
-
 
 		/// <summary>
 		/// We could change this to apply the rules when creating the password: Password.Create(newPassword) 
@@ -36,11 +32,9 @@ namespace Core_pragmatic_testing.Entities
 		/// <param name="newPassword"></param>
 		/// <param name="isHighProfileUser"></param>
 		/// <returns></returns>
-		public bool CreateNewPassword(Password newPassword, bool isHighProfileUser)
+		public bool CreateNewPassword(Password newPassword)
 		{
-			var passwordRules = _passwordRulesFactory.CreatePasswordRules(isHighProfileUser);
-
-			if (PasswordWasNotPreviouslyUsed(newPassword) && AllRulesComply(newPassword, passwordRules))
+			if (PasswordWasNotPreviouslyUsed(newPassword) && AllRulesComply(newPassword, PasswordRules))
 			{
 				PreviousPasswords.Add(CurrentPassword);
 				CurrentPassword = newPassword;

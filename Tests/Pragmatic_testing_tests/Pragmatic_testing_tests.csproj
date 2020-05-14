@@ -19,4 +19,8 @@
     <ProjectReference Include="..\..\Application_pragmatic_testing\Application_pragmatic_testing.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infra\" />
+  </ItemGroup>
+
 </Project>

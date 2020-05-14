@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Core_pragmatic_testing.Entities;
 using Core_pragmatic_testing.Factories;
+using Core_pragmatic_testing.PasswordRules;
 
 namespace Pragmatic_testing_tests.Core.Builders
 {
@@ -18,11 +19,11 @@ namespace Pragmatic_testing_tests.Core.Builders
 				new Password("previousPassword1"),
 				new Password("previousPassword2"),
 			};
-		private IPasswordRulesFactory _passwordRulesFactory = new PasswordRulesFactory();
+		private IReadOnlyList<IPasswordRule> _passwordRules = new List<IPasswordRule>() { new PasswordLengthRule() };
 
 		public PasswordHistory Build()
 		{
-			return new PasswordHistory(_userName, _currentPassword, _previousPasswords, _passwordRulesFactory);
+			return new PasswordHistory(_userName, _currentPassword, _previousPasswords, _passwordRules);
 		}
 
 		public PasswordHistoryBuilder withUserName(string userName)
@@ -43,9 +44,9 @@ namespace Pragmatic_testing_tests.Core.Builders
 			return this;
 		}
 
-		public PasswordHistoryBuilder withPasswordRulesFactory(PasswordRulesFactory passwordRulesFactory)
+		public PasswordHistoryBuilder withPasswordRules(IReadOnlyList<IPasswordRule> passwordRules)
 		{
-			_passwordRulesFactory = passwordRulesFactory;
+			_passwordRules = passwordRules;
 			return this;
 		}
 	}

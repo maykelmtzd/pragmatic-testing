@@ -23,18 +23,18 @@ namespace Pragmatic_testing_tests.Application.TooMuchMocking
 	public class ChangePasswordCommandTests
 	{
 		private readonly ChangePasswordCommand.ChangePasswordHandler _changePasswordHandler;
-		private readonly Mock<IUserBehaviourService> _credentialService;
+		private readonly Mock<IUserBehaviourService> _userBehaviourService;
 		private readonly Mock<IPasswordHistoryRepository> _passwordHistoryRepo;
 		private readonly Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>> _logger;
 		private readonly Mock<IExternalEventPublisherServ> _externalEventPublisher;
 
 		public ChangePasswordCommandTests()
 		{
-			_credentialService = new Mock<IUserBehaviourService>();
+			_userBehaviourService = new Mock<IUserBehaviourService>();
 			_passwordHistoryRepo = new Mock<IPasswordHistoryRepository>();
 			_logger = new Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>>();
 			_externalEventPublisher = new Mock<IExternalEventPublisherServ>();
-			_changePasswordHandler = new ChangePasswordCommand.ChangePasswordHandler(_credentialService.Object, _passwordHistoryRepo.Object, _logger.Object,
+			_changePasswordHandler = new ChangePasswordCommand.ChangePasswordHandler(_userBehaviourService.Object, _passwordHistoryRepo.Object, _logger.Object,
 				_externalEventPublisher.Object);
 		}
 
@@ -51,7 +51,7 @@ namespace Pragmatic_testing_tests.Application.TooMuchMocking
 
 			var changePasswordCommand = new ChangePasswordCommand(changePasswordDto);
 
-			_passwordHistoryRepo.Setup(mock => mock.GetPasswordHistory(changePasswordDto.UserName)).Returns
+			_passwordHistoryRepo.Setup(mock => mock.GetPasswordHistory(changePasswordDto.UserName, It.IsAny<bool>())).Returns
 				(
 					new PasswordHistoryBuilder().withUserName(changePasswordDto.UserName).Build() 
 				);
@@ -86,7 +86,7 @@ namespace Pragmatic_testing_tests.Application.TooMuchMocking
 
 			var changePasswordCommand = new ChangePasswordCommand(changePasswordDto);
 
-			_passwordHistoryRepo.Setup(mock => mock.GetPasswordHistory(changePasswordDto.UserName)).Returns
+			_passwordHistoryRepo.Setup(mock => mock.GetPasswordHistory(changePasswordDto.UserName, It.IsAny<bool>())).Returns
 				(
 					new PasswordHistoryBuilder().withUserName(changePasswordDto.UserName).Build()
 				);

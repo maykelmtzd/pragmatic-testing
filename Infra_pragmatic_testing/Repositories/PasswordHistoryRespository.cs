@@ -13,14 +13,15 @@ namespace Infra_pragmatic_testing.Repositories
 	{
 		private readonly ISimpleInMemoryDb _simpleInMemoryDbGateway;
 		private readonly IPasswordRulesFactory _passwordRulesFactory;
-		public PasswordHistoryRespository(ISimpleInMemoryDb simpleInMemoryDbGateway)
+		public PasswordHistoryRespository(ISimpleInMemoryDb simpleInMemoryDbGateway, IPasswordRulesFactory passwordRulesFactory)
 		{
 			_simpleInMemoryDbGateway = simpleInMemoryDbGateway;
+			_passwordRulesFactory = passwordRulesFactory;
 		}
-		public PasswordHistory GetPasswordHistory(string userName)
+		public PasswordHistory GetPasswordHistory(string userName, bool isHighProfileUser)
 		{
 			var passwordHistoryDto = _simpleInMemoryDbGateway.GetPasswordHistoryDto(userName);
-			return ConvertToPasswordHistoryDomainObj(passwordHistoryDto);
+			return ConvertToPasswordHistoryDomainObj(passwordHistoryDto, isHighProfileUser);
 		}
 
 		/// <summary>
@@ -48,15 +49,15 @@ namespace Infra_pragmatic_testing.Repositories
 			};
 		}
 
-		private PasswordHistory ConvertToPasswordHistoryDomainObj(PasswordHistoryDto passwordHistoryDto)
+		private PasswordHistory ConvertToPasswordHistoryDomainObj(PasswordHistoryDto passwordHistoryDto, bool isHighProfileUser)
 		{
 			return new PasswordHistory
 				(
 					userName: passwordHistoryDto.UserName,
 					currentPassword: new Password(passwordHistoryDto.CurrentPassword),
 					previousPasswords: passwordHistoryDto.PreviousPasswords.Select(strPsw => new Password(strPsw)).ToList(),
-					new PasswordRulesFactory()
-				);
+					_passwordRulesFactory.CreatePasswordRules(isHighProfileUser)
+				); ;
 		}
 	}
 }
