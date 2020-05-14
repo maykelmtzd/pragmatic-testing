@@ -12,6 +12,7 @@ namespace Infra_pragmatic_testing.Repositories
 	public class PasswordHistoryRespository : IPasswordHistoryRepository
 	{
 		private readonly ISimpleInMemoryDb _simpleInMemoryDbGateway;
+		private readonly IPasswordRulesFactory _passwordRulesFactory;
 		public PasswordHistoryRespository(ISimpleInMemoryDb simpleInMemoryDbGateway)
 		{
 			_simpleInMemoryDbGateway = simpleInMemoryDbGateway;
@@ -20,17 +21,6 @@ namespace Infra_pragmatic_testing.Repositories
 		{
 			var passwordHistoryDto = _simpleInMemoryDbGateway.GetPasswordHistoryDto(userName);
 			return ConvertToPasswordHistoryDomainObj(passwordHistoryDto);
-		}
-
-		private PasswordHistory ConvertToPasswordHistoryDomainObj(PasswordHistoryDto passwordHistoryDto)
-		{
-			return new PasswordHistory
-				(
-					userName: passwordHistoryDto.UserName,
-					currentPassword: new Password(passwordHistoryDto.CurrentPassword),
-					previousPasswords: passwordHistoryDto.PreviousPasswords.Select(strPsw => new Password(strPsw)).ToList(),
-					new PasswordRulesFactory()
-				);
 		}
 
 		/// <summary>
@@ -56,6 +46,17 @@ namespace Infra_pragmatic_testing.Repositories
 				CurrentPassword = passwordHistory.CurrentPassword.PasswordText,
 				PreviousPasswords = passwordHistory.PreviousPasswords.Select(psw => psw.PasswordText).ToList()
 			};
+		}
+
+		private PasswordHistory ConvertToPasswordHistoryDomainObj(PasswordHistoryDto passwordHistoryDto)
+		{
+			return new PasswordHistory
+				(
+					userName: passwordHistoryDto.UserName,
+					currentPassword: new Password(passwordHistoryDto.CurrentPassword),
+					previousPasswords: passwordHistoryDto.PreviousPasswords.Select(strPsw => new Password(strPsw)).ToList(),
+					new PasswordRulesFactory()
+				);
 		}
 	}
 }

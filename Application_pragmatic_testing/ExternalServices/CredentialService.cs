@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace Application_pragmatic_testing.ExternalServices
 {
-	public class CredentialService : ICredentialService
+	public class CredentialService : IUserBehaviourService
 	{
 		private readonly ICredentialsManagerGateway _credentialsManagerGateway;
 		private readonly IOptions<CredentialsManagerSettings> _credentialsManagerSettings;

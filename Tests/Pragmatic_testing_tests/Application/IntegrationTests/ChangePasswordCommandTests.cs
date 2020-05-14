@@ -29,7 +29,7 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 	public class ChangePasswordCommandTests
 	{
 		private readonly ChangePasswordCommand.ChangePasswordHandler _changePasswordHandler;
-		private readonly Mock<ICredentialService> _credentialService;
+		private readonly Mock<IUserBehaviourService> _credentialService;
 		private readonly PasswordHistoryRespository _passwordHistoryRepo;
 		private readonly Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>> _logger;
 		private readonly Mock<IEventGridGateway> _eventGridGateway;
@@ -39,7 +39,7 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 		private readonly IOptions<EventGridSettings> _eventGridSettingOptions;
 		public ChangePasswordCommandTests()
 		{
-			_credentialService = new Mock<ICredentialService>();
+			_credentialService = new Mock<IUserBehaviourService>();
 
 			_simpleInMemoryDb = SimpleInMemoryDb.InitializeDbWithDefaultSeedData();
 			_passwordHistoryRepo = new PasswordHistoryRespository(_simpleInMemoryDb);

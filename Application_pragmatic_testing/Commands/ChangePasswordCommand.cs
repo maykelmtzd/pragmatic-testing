@@ -28,7 +28,7 @@ namespace Application_pragmatic_testing.Commands
 		public class ChangePasswordHandler : IRequestHandler<ChangePasswordCommand, ChangePasswordResponse>
 		{
 			//ICredentialService is a valuable interface because represent a third party service, it's at the edge of the microservice.
-			private readonly ICredentialService _credentialService;
+			private readonly IUserBehaviourService _userBehaviourService;
 
 			//IExternalEventPublisherServ is NOT valuable, it's an internal service, not at the end of the system. It only has one concrete implementation.
 			private readonly IExternalEventPublisherServ _externalEventPublisherServ;
@@ -37,12 +37,12 @@ namespace Application_pragmatic_testing.Commands
 			private readonly ILogger<ChangePasswordHandler> _logger;
 			
 
-			public ChangePasswordHandler(ICredentialService credentialService, 
+			public ChangePasswordHandler(IUserBehaviourService userBehaviourService, 
 				IPasswordHistoryRepository passwordHistoryRepo,
 				ILogger<ChangePasswordHandler> logger,
 				IExternalEventPublisherServ externalEventPublisherServ)
 			{
-				_credentialService = credentialService;
+				_userBehaviourService = userBehaviourService;
 				_passwordHistoryRepo = passwordHistoryRepo;
 				_logger = logger;
 				_externalEventPublisherServ = externalEventPublisherServ;
@@ -61,7 +61,7 @@ namespace Application_pragmatic_testing.Commands
 				var newPassword = new Password(command.ChangePasswordDto.NewPassword);
 
 				//call external dependencies to retrieve information needed to execute business logic.
-				var isHighProfileUser = _credentialService.IsHighProfileUser(userName);
+				var isHighProfileUser = _userBehaviourService.IsHighProfileUser(userName);
 
 				//Load domain object(usually aggregate) in memory
 				var passwordHistory = _passwordHistoryRepo.GetPasswordHistory(userName);
