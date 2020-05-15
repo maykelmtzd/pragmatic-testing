@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Core\Rules\" />
     <Folder Include="Infra\" />
   </ItemGroup>
 

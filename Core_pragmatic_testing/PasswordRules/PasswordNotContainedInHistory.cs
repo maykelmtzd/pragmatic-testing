@@ -6,7 +6,7 @@ using Core_pragmatic_testing.Entities;
 
 namespace Core_pragmatic_testing.PasswordRules
 {
-	public class PasswordNotContainedInPrevious : IPasswordRule
+	public class PasswordNotContainedInHistory : IPasswordRule
 	{
 		public bool Comply(Password newPassword, IReadOnlyList<Password> relevantHistory)
 		{
