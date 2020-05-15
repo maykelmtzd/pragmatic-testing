@@ -131,8 +131,8 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 		[Fact]
 		public async Task When_change_password_handler_receive_a_valid_dto_and_it_does_not_comply_with_business_rules_it_returns_failure_and_response_body_and_does_not_save_or_publish()
 		{
-			//Password is too short, it doesn't comply
-			var newPassword = "abc";
+			//Password is contained in history, it doesn't comply
+			var newPassword = "password1";
 			var changePasswordDto = new ChangePasswordDto()
 			{
 				UserName = "UserName1",

@@ -5,7 +5,6 @@ using Core_pragmatic_testing.Common;
 
 namespace Core_pragmatic_testing.Entities
 {
-	//Potential value object
 	public class Password : ValueObject
 	{
 		public string PasswordText { get; }

@@ -51,9 +51,12 @@ namespace Core_pragmatic_testing.Entities
 
 		private bool AllRulesComply(Password newPassword, IReadOnlyList<IPasswordRule> passwordRules)
 		{
+			var pswHistory = new List<Password>(PreviousPasswords);
+			pswHistory.Add(CurrentPassword);
+
 			foreach (var passwordRule in passwordRules)
 			{
-				if (!passwordRule.Comply(newPassword))
+				if (!passwordRule.Comply(newPassword, pswHistory))
 				{
 					return false;
 				}
