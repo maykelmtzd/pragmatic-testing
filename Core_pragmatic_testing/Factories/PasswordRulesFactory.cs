@@ -10,9 +10,9 @@ namespace Core_pragmatic_testing.Factories
 		public IReadOnlyList<IPasswordRule> CreatePasswordRules(bool isHighProfileUser)
 		{
 			if (isHighProfileUser)
-				return new List<IPasswordRule> { new PasswordNotContainedInHistory(), new NewNonLetterCharacterAdded() };
+				return new List<IPasswordRule> { new NewPasswordContainOthersInHistory(), new NewNonLetterCharacterAdded() };
 
-			return new List<IPasswordRule> { new PasswordNotContainedInHistory() };
+			return new List<IPasswordRule> { new NewPasswordContainOthersInHistory() };
 		}
 	}
 }
