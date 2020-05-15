@@ -6,7 +6,7 @@ using Core_pragmatic_testing.PasswordRules;
 using FluentAssertions;
 using Xunit;
 
-namespace Pragmatic_testing_tests.Core.Rules
+namespace Pragmatic_testing_tests.Core.PasswordRules
 {
 	public class PasswordNotContainedInHistoryTests
 	{

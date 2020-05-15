@@ -9,26 +9,36 @@ namespace Core_pragmatic_testing.PasswordRules
 {
 	public class NewNonLetterCharacterAdded : IPasswordRule
 	{
-		public bool Comply(Password newPassword, IReadOnlyList<Password> relevantHistory)
+		private const int RelevantHistory = 2;
+		public bool Comply(Password newPassword, IReadOnlyList<Password> passwordHistory)
 		{
-			var allPreviousNonLetterCharacters = relevantHistory.Aggregate
+			var allPreviousNonLetterCharacters = passwordHistory.OrderByDescending(psw => psw.CreatedAt)
+				.Take(RelevantHistory)
+				.Select(psw => psw.PasswordText)
+				.Aggregate
 				(
-					new StringBuilder(), (strBuilder, psw) => strBuilder.Append(ExtractNonLetterCharacters(psw.PasswordText))
-				).ToString();
+					new HashSet<char>(), (charSet, pswText) => 
+					{
+						var charList = new List<char>(charSet);
+						charList.AddRange(ExtractNonLetterCharacters(pswText));
+						return new HashSet<char>(charList);
+					}
+				);
 
-			return ExtractNonLetterCharacters(newPassword.PasswordText).ToCharArray()
+			//TODO add extension method to char: char.NotContainedIn(list) instead of NotContainedIn(char, list)
+			return ExtractNonLetterCharacters(newPassword.PasswordText)
 				.Where(@char => NotContainedIn(@char, allPreviousNonLetterCharacters))
 				.Count() > 0;
 		}
 
-		private bool NotContainedIn(char character, string allPreviousNonLetterCharacters)
+		private bool NotContainedIn(char character, HashSet<char> allPreviousNonLetterCharacters)
 		{
 			return !allPreviousNonLetterCharacters.Contains(character);
 		}
 
-		private string ExtractNonLetterCharacters(string passwordText)
+		private HashSet<char> ExtractNonLetterCharacters(string passwordText)
 		{
-			return Regex.Replace(passwordText, "[^a-zA-Z]", "");
+			return new HashSet<char>(Regex.Replace(passwordText, "[a-zA-Z]", ""));
 		}
 	}
 }
