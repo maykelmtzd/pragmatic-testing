@@ -24,7 +24,6 @@ namespace Core_pragmatic_testing.Entities
 		protected override IEnumerable<object> GetEqualityComponents()
 		{
 			yield return PasswordText;
-			yield return CreatedAt;
 		}
 	}
 }

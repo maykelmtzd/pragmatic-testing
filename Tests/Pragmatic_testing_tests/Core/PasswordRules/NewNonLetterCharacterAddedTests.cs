@@ -8,6 +8,11 @@ using Xunit;
 
 namespace Pragmatic_testing_tests.Core.PasswordRules
 {
+	/// <summary>
+	/// Functional verification approach, we should favor this style as much as possible:
+	/// 1- Everything the function/method needs is specified in the parameters.
+	/// 2- The test just verify the function/method output.
+	/// </summary>
 	public class NewNonLetterCharacterAddedTests
 	{
 		private List<Password> _passwordHistory;
