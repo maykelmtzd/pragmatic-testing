@@ -23,14 +23,14 @@ namespace Pragmatic_testing_tests.Application.TooMuchMocking
 	public class ChangePasswordCommandTests
 	{
 		private readonly ChangePasswordCommand.ChangePasswordHandler _changePasswordHandler;
-		private readonly Mock<IUserBehaviourService> _userBehaviourService;
+		private readonly Mock<IUserBehaviorService> _userBehaviourService;
 		private readonly Mock<IPasswordHistoryRepository> _passwordHistoryRepo;
 		private readonly Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>> _logger;
 		private readonly Mock<IExternalEventPublisherServ> _externalEventPublisher;
 
 		public ChangePasswordCommandTests()
 		{
-			_userBehaviourService = new Mock<IUserBehaviourService>();
+			_userBehaviourService = new Mock<IUserBehaviorService>();
 			_passwordHistoryRepo = new Mock<IPasswordHistoryRepository>();
 			_logger = new Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>>();
 			_externalEventPublisher = new Mock<IExternalEventPublisherServ>();

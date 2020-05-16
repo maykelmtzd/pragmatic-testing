@@ -7,16 +7,18 @@ namespace Application_pragmatic_testing.ExternalServices
 {
 	// This is a passthrou/wrapper over the external library(code not controlled by the team)
 	// that is actually making the call out of process(network call).
-	public class CredentialsManagerGateway : ICredentialsManagerGateway
+	public class UserBehaviorGateway : IUserBehaviorGateway
 	{
 		private HttpClient _httpClient;
-		public CredentialsManagerGateway(HttpClient httpClient)
+		public UserBehaviorGateway(HttpClient httpClient)
 		{
 			_httpClient = httpClient;
 		}
 		public string IsPlatinumUser(string url)
 		{
-			return _httpClient.GetStringAsync(url).Result;
+			return "false"; //Not making the actual call down below to simplify example.
+
+			//return _httpClient.GetStringAsync(url).Result;
 		}
 	}
 }

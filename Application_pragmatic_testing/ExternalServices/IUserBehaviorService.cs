@@ -1,6 +1,6 @@
 ﻿namespace Application_pragmatic_testing.ExternalServices
 {
-	public interface IUserBehaviourService
+	public interface IUserBehaviorService
 	{
 		bool IsHighProfileUser(string userName);
 	}

@@ -14,16 +14,19 @@ namespace Infra_pragmatic_testing.Services
 	/// </summary>
 	public class EventGridGateway : IEventGridGateway
 	{
-		private readonly EventGridClient _eventGridClient;
+		private readonly IEventGridClient _eventGridClient;
 
-		public EventGridGateway(EventGridClient eventGridClient)
+		public EventGridGateway(IEventGridClient eventGridClient)
 		{
 			_eventGridClient = eventGridClient;
 		}
 
-		public Task<AzureOperationResponse> PublishEventsWithHttpMessagesAsync(string topicHostname, IList<EventGridEvent> events)
+		public AzureOperationResponse PublishEventsWithHttpMessagesAsync(string topicHostname, IList<EventGridEvent> events)
 		{
-			return _eventGridClient.PublishEventsWithHttpMessagesAsync(topicHostname, events);
+			//Not making the actual call down below to simplify example.
+			return new AzureOperationResponse();
+
+			//return _eventGridClient.PublishEventsWithHttpMessagesAsync(topicHostname, events).Result;
 		}
 	}
 }

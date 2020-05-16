@@ -25,10 +25,10 @@ namespace Infra_pragmatic_testing.Services
         private readonly IEventGridGateway _eventGridGateway;
         private readonly IOptions<EventGridSettings> _eventGridSettings;
         private readonly AsyncRetryPolicy _retryPolicy;
-        private readonly ILogger _logger;
+        private readonly ILogger<ExternalEventPublisherServ> _logger;
 
         public ExternalEventPublisherServ(IEventGridGateway eventGridGateway, 
-            IOptions<EventGridSettings> eventGridSettings, AsyncRetryPolicy retryPolicy, ILogger logger)
+            IOptions<EventGridSettings> eventGridSettings, AsyncRetryPolicy retryPolicy, ILogger<ExternalEventPublisherServ> logger)
         {
             _eventGridGateway = eventGridGateway;
             _eventGridSettings = eventGridSettings;
@@ -41,13 +41,14 @@ namespace Infra_pragmatic_testing.Services
             var eventGridEvent = MapToEventGridEvent(externalEvent);
             try
             {
-                var topicHostName = new Uri(_eventGridSettings.Value.InvoiceManagementTopicEndpoint).Host;
+                //var topicHostName = new Uri(_eventGridSettings.Value.InvoiceManagementTopicEndpoint).Host;
+                var topicHostName = new Uri("http://someEndpoint").Host;
 
                 await _retryPolicy.ExecuteAsync(async ctx =>
                 {
                     _logger.Log(LogLevel.Debug,
                         $"Publishing event:{eventGridEvent.EventType} to EventGrid. RetryCount:{ctx["retryCount"]} {DateTime.Now}");
-                    await _eventGridGateway.PublishEventsWithHttpMessagesAsync(topicHostName, new List<EventGridEvent> { eventGridEvent });
+                    _eventGridGateway.PublishEventsWithHttpMessagesAsync(topicHostName, new List<EventGridEvent> { eventGridEvent });
                 }, new Context { { "retryCount", 1 } });
 
             }

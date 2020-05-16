@@ -20,6 +20,6 @@ namespace Infra_pragmatic_testing.Services
 	/// </summary>
 	public interface IEventGridGateway
 	{
-		Task<AzureOperationResponse> PublishEventsWithHttpMessagesAsync(string topicHostname, IList<EventGridEvent> events);
+		AzureOperationResponse PublishEventsWithHttpMessagesAsync(string topicHostname, IList<EventGridEvent> events);
 	}
 }

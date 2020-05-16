@@ -6,12 +6,12 @@ using Microsoft.Extensions.Options;
 
 namespace Application_pragmatic_testing.ExternalServices
 {
-	public class CredentialService : IUserBehaviourService
+	public class UserBehaviorService : IUserBehaviorService
 	{
-		private readonly ICredentialsManagerGateway _credentialsManagerGateway;
+		private readonly IUserBehaviorGateway _credentialsManagerGateway;
 		private readonly IOptions<CredentialsManagerSettings> _credentialsManagerSettings;
 
-		public CredentialService(ICredentialsManagerGateway credentialsManagerGateway, IOptions<CredentialsManagerSettings> credentialsManagerSettings)
+		public UserBehaviorService(IUserBehaviorGateway credentialsManagerGateway, IOptions<CredentialsManagerSettings> credentialsManagerSettings)
 		{
 			_credentialsManagerGateway = credentialsManagerGateway;
 			_credentialsManagerSettings = credentialsManagerSettings;

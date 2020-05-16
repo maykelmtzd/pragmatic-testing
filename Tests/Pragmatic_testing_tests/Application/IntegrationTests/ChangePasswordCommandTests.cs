@@ -31,9 +31,10 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 	public class ChangePasswordCommandTests
 	{
 		private readonly ChangePasswordCommand.ChangePasswordHandler _changePasswordHandler;
-		private readonly Mock<IUserBehaviourService> _credentialService;
+		private readonly Mock<IUserBehaviorService> _credentialService;
 		private readonly PasswordHistoryRespository _passwordHistoryRepo;
-		private readonly Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>> _logger;
+		private readonly Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>> _handlerLogger;
+		private readonly Mock<ILogger<ExternalEventPublisherServ>> _eventPublisherServLogger;
 		private readonly Mock<IEventGridGateway> _eventGridGateway;
 		private readonly AsyncRetryPolicy _asyncRetryPolicy;
 		private readonly ExternalEventPublisherServ _externalEventPublisherServ;
@@ -41,12 +42,13 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 		private readonly IOptions<EventGridSettings> _eventGridSettingOptions;
 		public ChangePasswordCommandTests()
 		{
-			_credentialService = new Mock<IUserBehaviourService>();
+			_credentialService = new Mock<IUserBehaviorService>();
 
 			_simpleInMemoryDb = SimpleInMemoryDb.InitializeDbWithDefaultSeedData();
 			_passwordHistoryRepo = new PasswordHistoryRespository(_simpleInMemoryDb);
 
-			_logger = new Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>>();
+			_handlerLogger = new Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>>();
+			_eventPublisherServLogger = new Mock<ILogger<ExternalEventPublisherServ>>();
 			_eventGridGateway = new Mock<IEventGridGateway>();
 
 			_asyncRetryPolicy = Policy
@@ -66,10 +68,10 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 					_eventGridGateway.Object,
 					_eventGridSettingOptions,
 					_asyncRetryPolicy,
-					_logger.Object
+					_eventPublisherServLogger.Object
 				);
 
-			_changePasswordHandler = new ChangePasswordCommand.ChangePasswordHandler(_credentialService.Object, _passwordHistoryRepo, _logger.Object,
+			_changePasswordHandler = new ChangePasswordCommand.ChangePasswordHandler(_credentialService.Object, _passwordHistoryRepo, _handlerLogger.Object,
 				_externalEventPublisherServ);
 		}
 

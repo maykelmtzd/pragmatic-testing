@@ -1,6 +1,6 @@
 ﻿namespace Application_pragmatic_testing.ExternalServices
 {
-	public interface ICredentialsManagerGateway
+	public interface IUserBehaviorGateway
 	{
 		string IsPlatinumUser(string url);
 	}
