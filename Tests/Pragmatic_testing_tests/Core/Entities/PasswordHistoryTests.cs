@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Core_pragmatic_testing.Entities;
+using Core_pragmatic_testing.Factories;
 using Core_pragmatic_testing.PasswordRules;
 using FluentAssertions;
 using Xunit;
@@ -16,7 +17,7 @@ namespace Pragmatic_testing_tests.Core.Entities
 		private const string CurrentPassword = "currentPassword1";
 		private const string UsedPassword = "password4";
 		private List<Password> _previousPasswords;
-		private IReadOnlyList<IPasswordRule> _passwordRules;
+		private IPasswordRuleSet _passwordRules;
 
 		private PasswordHistory _passwordHistory;
 		public PasswordHistoryTests()
@@ -29,7 +30,7 @@ namespace Pragmatic_testing_tests.Core.Entities
 				new Password("password3", new DateTime(2020, 02, 02))
 			};
 
-			_passwordRules = new List<IPasswordRule> { new NewPasswordContainOthersInHistory(), new NewNonLetterCharacterAdded() };
+			_passwordRules = new HighProfileUserPasswordRules();
 
 			_passwordHistory = new PasswordHistory("UserName1", new Password(CurrentPassword), _previousPasswords, _passwordRules);
 		}

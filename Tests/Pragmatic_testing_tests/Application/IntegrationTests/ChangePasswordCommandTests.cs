@@ -44,7 +44,7 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 			_credentialService = new Mock<IUserBehaviourService>();
 
 			_simpleInMemoryDb = SimpleInMemoryDb.InitializeDbWithDefaultSeedData();
-			_passwordHistoryRepo = new PasswordHistoryRespository(_simpleInMemoryDb, new PasswordRulesFactory());
+			_passwordHistoryRepo = new PasswordHistoryRespository(_simpleInMemoryDb);
 
 			_logger = new Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>>();
 			_eventGridGateway = new Mock<IEventGridGateway>();

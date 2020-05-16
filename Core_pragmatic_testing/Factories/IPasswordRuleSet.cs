@@ -6,8 +6,8 @@ namespace Core_pragmatic_testing.Factories
 	/// <summary>
 	/// This interface is not valuable. We should remove it.
 	/// </summary>
-	public interface IPasswordRulesFactory
+	public interface IPasswordRuleSet
 	{
-		IReadOnlyList<IPasswordRule> CreatePasswordRules(bool isHighProfileUser);
+		HashSet<IPasswordRule> GetPasswordRules();
 	}
 }

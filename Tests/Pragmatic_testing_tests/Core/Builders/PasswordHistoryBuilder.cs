@@ -19,7 +19,7 @@ namespace Pragmatic_testing_tests.Core.Builders
 				new Password("previousPassword1"),
 				new Password("previousPassword2"),
 			};
-		private IReadOnlyList<IPasswordRule> _passwordRules = new List<IPasswordRule>() { new NewPasswordContainOthersInHistory() };
+		private IPasswordRuleSet _passwordRules = new RegularUserPasswordRules();
 
 		public PasswordHistory Build()
 		{
@@ -44,7 +44,7 @@ namespace Pragmatic_testing_tests.Core.Builders
 			return this;
 		}
 
-		public PasswordHistoryBuilder withPasswordRules(IReadOnlyList<IPasswordRule> passwordRules)
+		public PasswordHistoryBuilder withPasswordRules(IPasswordRuleSet passwordRules)
 		{
 			_passwordRules = passwordRules;
 			return this;
