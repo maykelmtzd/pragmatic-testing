@@ -6,6 +6,12 @@ using Core_pragmatic_testing.Factories;
 
 namespace Infra_pragmatic_testing.Database
 {
+	/// <summary>
+	/// Using the Result<> (CSharpFunctionalExtensions) return type could be a better approach to using "void/raise exception" in this methods. It
+	/// could be in general a better strategy for the entire application.
+	/// For the sake of time, given that Result<> type is not neccessary to demonstrate the pragmatic approach to unit testing, 
+	/// Result<> is not used.
+	/// </summary>
 	public class SimpleInMemoryDb : ISimpleInMemoryDb
 	{
 		public void AddPasswordHistoryDto(PasswordHistoryDto passwordHistory)

@@ -41,8 +41,8 @@ namespace Infra_pragmatic_testing.Repositories
 		/// Notice that we don't need to have one integration test per each integration point (DB, EventGrid, Logging, etc)
 		/// we want to test. A single integration test can cover several integration points.
 		/// 
-		/// Using the Result<> (CSharpFunctionalExtensions) return type could be a better approach to using void in this method, or
-		/// as a general strategy in the application.
+		/// Using the Result<> (CSharpFunctionalExtensions) return type could be a better approach to using "void/raise exception" in this methods. 
+		/// It could be in general a better strategy for the entire application.
 		/// For the sake of time, given that Result<> type is not neccessary to demonstrate the pragmatic approach to unit testing, 
 		/// Result<> is not used.
 		/// </summary>
