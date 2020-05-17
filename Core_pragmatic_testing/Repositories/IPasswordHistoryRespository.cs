@@ -9,6 +9,8 @@ namespace Core_pragmatic_testing.Repositories
 	{
 		PasswordHistory GetPasswordHistory(string userName, bool isHighProfileUser);
 
+		PasswordHistoryUsingDomainEvents GetPasswordHistoryUsingDomainEvents(string userName, bool isHighProfileUser);
+
 		void UpdatePasswordHistory(PasswordHistory passwordHistory);
 	}
 }

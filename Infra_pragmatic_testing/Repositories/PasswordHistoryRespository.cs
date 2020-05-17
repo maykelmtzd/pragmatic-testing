@@ -34,6 +34,12 @@ namespace Infra_pragmatic_testing.Repositories
 			return ConvertToPasswordHistoryDomainObj(passwordHistoryDto, isHighProfileUser);
 		}
 
+		public PasswordHistoryUsingDomainEvents GetPasswordHistoryUsingDomainEvents(string userName, bool isHighProfileUser)
+		{
+			var passwordHistoryDto = _simpleInMemoryDb.GetPasswordHistoryDto(userName);
+			return ConvertToPasswordHistoryUsingDomainEvents(passwordHistoryDto, isHighProfileUser);
+		}
+
 		/// <summary>
 		/// This methods bubles up any DB exceptions. It would be catch by a global handler at the application level.
 		/// We probably want the application to log the exception, this would be tested as an integration test.
@@ -69,6 +75,28 @@ namespace Infra_pragmatic_testing.Repositories
 		static internal PasswordHistory ConvertToPasswordHistoryDomainObj(PasswordHistoryDto passwordHistoryDto, bool isHighProfileUser)
 		{
 			return new PasswordHistory
+				(
+					userName: passwordHistoryDto.UserName,
+					currentPassword: new Password(passwordHistoryDto.CurrentPassword.Item1, passwordHistoryDto.CurrentPassword.Item2),
+					previousPasswords: passwordHistoryDto.PreviousPasswords.Select(psw => new Password(psw.Item1, psw.Item2)).ToList(),
+					isHighProfileUser ? (IPasswordRuleSet)new HighProfileUserPasswordRules() : new RegularUserPasswordRules()
+				);
+		}
+
+		/// <summary>
+		/// This method is not tested. It was added for the sake of showing both approaches:
+		/// 1- Using domain events.
+		/// 2- Not using domain events.
+		/// 
+		/// In real production code depending on whether we choose to use domain events or not, we would have only one version of the
+		/// ConvertToPasswordHistory() method.
+		/// </summary>
+		/// <param name="passwordHistoryDto"></param>
+		/// <param name="isHighProfileUser"></param>
+		/// <returns></returns>
+		static internal PasswordHistoryUsingDomainEvents ConvertToPasswordHistoryUsingDomainEvents(PasswordHistoryDto passwordHistoryDto, bool isHighProfileUser)
+		{
+			return new PasswordHistoryUsingDomainEvents
 				(
 					userName: passwordHistoryDto.UserName,
 					currentPassword: new Password(passwordHistoryDto.CurrentPassword.Item1, passwordHistoryDto.CurrentPassword.Item2),

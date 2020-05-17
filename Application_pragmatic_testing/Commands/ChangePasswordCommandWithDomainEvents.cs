@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application_pragmatic_testing.Dtos;
 using Application_pragmatic_testing.ExternalServices;
 using Application_pragmatic_testing.Responses;
 using Core_pragmatic_testing.Entities;
 using Core_pragmatic_testing.Repositories;
-using Infra_pragmatic_testing.Constants;
 using Infra_pragmatic_testing.ExternalEvents;
 using Infra_pragmatic_testing.Services;
 using MediatR;
@@ -16,16 +12,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Application_pragmatic_testing.Commands
 {
-	public class ChangePasswordCommand : IRequest<ChangePasswordResponse>
+	public class ChangePasswordCommandWithDomainEvents : IRequest<ChangePasswordResponse>
 	{
-		public ChangePasswordCommand(ChangePasswordDto changePasswordDto)
+		public ChangePasswordCommandWithDomainEvents(ChangePasswordDto changePasswordDto)
 		{
 			ChangePasswordDto = changePasswordDto;
 		}
 
 		public ChangePasswordDto ChangePasswordDto { get; }
 
-		public class ChangePasswordHandler : IRequestHandler<ChangePasswordCommand, ChangePasswordResponse>
+		public class ChangePasswordWithDomainEventsHandler : IRequestHandler<ChangePasswordCommandWithDomainEvents, ChangePasswordResponse>
 		{
 			//IUserBehaviorService is NOT valuable, it's an internal service, not at the end/edge of the hexagon. It only has one concrete implementation.
 			private readonly IUserBehaviorService _userBehaviourService;
@@ -34,12 +30,12 @@ namespace Application_pragmatic_testing.Commands
 			private readonly IExternalEventPublisherServ _externalEventPublisherServ;
 
 			private readonly IPasswordHistoryRepository _passwordHistoryRepo;
-			private readonly ILogger<ChangePasswordHandler> _logger;
-			
+			private readonly ILogger<ChangePasswordWithDomainEventsHandler> _logger;
 
-			public ChangePasswordHandler(IUserBehaviorService userBehaviourService, 
+
+			public ChangePasswordWithDomainEventsHandler(IUserBehaviorService userBehaviourService,
 				IPasswordHistoryRepository passwordHistoryRepo,
-				ILogger<ChangePasswordHandler> logger,
+				ILogger<ChangePasswordWithDomainEventsHandler> logger,
 				IExternalEventPublisherServ externalEventPublisherServ)
 			{
 				_userBehaviourService = userBehaviourService;
@@ -54,7 +50,7 @@ namespace Application_pragmatic_testing.Commands
 			/// </summary>
 			/// <param name="command"></param>
 			/// <returns></returns>
-			public async Task<ChangePasswordResponse> Handle(ChangePasswordCommand command, CancellationToken cancellationToken)
+			public async Task<ChangePasswordResponse> Handle(ChangePasswordCommandWithDomainEvents command, CancellationToken cancellationToken)
 			{
 				//Translate Dto  information into Domain objects format(Some form of validation takes place).
 				var userName = command.ChangePasswordDto.UserName;
@@ -64,13 +60,13 @@ namespace Application_pragmatic_testing.Commands
 				var isHighProfileUser = _userBehaviourService.IsHighProfileUser(userName);
 
 				//Load domain object(usually aggregate) in memory
-				var passwordHistory = _passwordHistoryRepo.GetPasswordHistory(userName, isHighProfileUser);
+				var passwordHistoryUsingDomainEvents = _passwordHistoryRepo.GetPasswordHistoryUsingDomainEvents(userName, isHighProfileUser);
 
 				//Call operation on aggregate which mutates some state.
 				//Use strategy pattern: Pass the isHighProfile to the repo so the passwordHistory is created
 				//with the right object, HightProfileUserRulesFactory or RegularUserRulesFactory.
 				// I could add another object that perform some algorithm and only has on concrete implementation. FindPlainEnglishWords()
-				var passwordWasNotChanged = !passwordHistory.CreateNewPassword(newPassword);
+				var passwordWasNotChanged = !passwordHistoryUsingDomainEvents.CreateNewPassword(newPassword);
 
 				if (passwordWasNotChanged)
 				{
@@ -84,7 +80,7 @@ namespace Application_pragmatic_testing.Commands
 				_logger.LogInformation($"Saving new password for user {userName}");
 
 				//this could through an exception, see comments on UpdatePasswordHistory method.
-				_passwordHistoryRepo.UpdatePasswordHistory(passwordHistory);
+				_passwordHistoryRepo.UpdatePasswordHistory(passwordHistoryUsingDomainEvents);
 
 				#region IMS comments
 				//We don't need to:
@@ -101,9 +97,9 @@ namespace Application_pragmatic_testing.Commands
 				//eventGridService.PublishPasswordChangedEvent(userName, newPassword); 
 				#endregion
 
-				var passwordChangedExternalEvent = PasswordChangedData.CreateExternalEvent(userName, newPassword);
+				//var passwordChangedExternalEvent = PasswordChangedData.CreateExternalEvent(userName, newPassword);
 
-				await _externalEventPublisherServ.PublishAsync(passwordChangedExternalEvent);
+				//await _externalEventPublisherServ.PublishAsync(passwordChangedExternalEvent);
 
 				return new ChangePasswordResponse()
 				{

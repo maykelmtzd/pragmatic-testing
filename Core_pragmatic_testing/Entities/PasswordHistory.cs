@@ -6,15 +6,22 @@ using Core_pragmatic_testing.PasswordRules;
 
 namespace Core_pragmatic_testing.Entities
 {
-	public class PasswordHistory
+	/// <summary>
+	/// This class is inheriting from DomainEventPublisher to facilitate the implementation of examples for both approaches:
+	/// 1- Using domain events.
+	/// 2- Not using domain events.
+	/// 
+	/// In real production code if we decide that domain events are not needed we would need to inherit from DomainEventPublisher.
+	/// </summary>
+	public class PasswordHistory : DomainEventPublisher
 	{
-		public string UserName { get; private set; }
+		public string UserName { get; protected set; }
 
 		//TODO Make the command return CUrrentPassword and PreviusPassword so the Controller can return it back to the
 		//API caller
-		public Password CurrentPassword { get; private set; }
-		public List<Password> PreviousPasswords { get; private set; }
-		private IPasswordRuleSet PasswordRules { get; }
+		public Password CurrentPassword { get; protected set; }
+		public List<Password> PreviousPasswords { get; protected set; }
+		protected IPasswordRuleSet PasswordRules { get;  private set; }
 
 		public PasswordHistory(string userName,
 			Password currentPassword,
@@ -35,7 +42,7 @@ namespace Core_pragmatic_testing.Entities
 		/// <param name="newPassword"></param>
 		/// <param name="isHighProfileUser"></param>
 		/// <returns></returns>
-		public bool CreateNewPassword(Password newPassword)
+		public virtual bool CreateNewPassword(Password newPassword)
 		{
 			if (PasswordWasNotPreviouslyUsed(newPassword) && AllRulesComply(newPassword, PasswordRules.GetPasswordRules()))
 			{
@@ -47,12 +54,12 @@ namespace Core_pragmatic_testing.Entities
 			return false;
 		}
 
-		private bool PasswordWasNotPreviouslyUsed(Password newPassword)
+		protected bool PasswordWasNotPreviouslyUsed(Password newPassword)
 		{
 			return CurrentPassword != newPassword && !PreviousPasswords.Contains(newPassword);
 		}
 
-		private bool AllRulesComply(Password newPassword, HashSet<IPasswordRule> passwordRules)
+		protected bool AllRulesComply(Password newPassword, HashSet<IPasswordRule> passwordRules)
 		{
 			var pswHistory = new List<Password>(PreviousPasswords);
 			pswHistory.Add(CurrentPassword);
