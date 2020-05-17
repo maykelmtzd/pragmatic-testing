@@ -80,7 +80,7 @@ namespace Application_pragmatic_testing.Commands
 				_logger.LogInformation($"Saving new password for user {userName}");
 
 				//this could through an exception, see comments on UpdatePasswordHistory method.
-				_passwordHistoryRepo.UpdatePasswordHistory(passwordHistoryUsingDomainEvents);
+				await _passwordHistoryRepo.UpdatePasswordHistoryAsync(passwordHistoryUsingDomainEvents);
 
 				#region IMS comments
 				//We don't need to:

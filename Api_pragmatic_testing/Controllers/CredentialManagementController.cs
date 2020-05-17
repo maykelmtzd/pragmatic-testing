@@ -37,5 +37,12 @@ namespace Api_pragmatic_testing.Controllers
 			ChangePasswordResponse changePasswordResponse = await _mediator.Send(new ChangePasswordCommand(changePasswordDto));
 			return Ok(changePasswordResponse);
 		}
+
+		[HttpPost("credential/changePasswordWithDomainEvents")]
+		public async Task<IActionResult> ChangePasswordWithDomainEvents([FromBody] ChangePasswordDto changePasswordDto)
+		{
+			ChangePasswordResponse changePasswordResponse = await _mediator.Send(new ChangePasswordCommandWithDomainEvents(changePasswordDto));
+			return Ok(changePasswordResponse);
+		}
 	}
 }

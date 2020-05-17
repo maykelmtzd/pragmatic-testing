@@ -17,6 +17,7 @@ using Infra_pragmatic_testing.Database;
 using Infra_pragmatic_testing.ExternalEvents;
 using Infra_pragmatic_testing.Repositories;
 using Infra_pragmatic_testing.Services;
+using MediatR;
 using Microsoft.Azure.EventGrid.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -33,6 +34,7 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 		private readonly ChangePasswordCommand.ChangePasswordHandler _changePasswordHandler;
 		private readonly Mock<IUserBehaviorService> _credentialService;
 		private readonly PasswordHistoryRespository _passwordHistoryRepo;
+		private readonly Mock<IMediator> _mediator;
 		private readonly Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>> _handlerLogger;
 		private readonly Mock<ILogger<ExternalEventPublisherServ>> _eventPublisherServLogger;
 		private readonly Mock<IEventGridGateway> _eventGridGateway;
@@ -44,8 +46,9 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 		{
 			_credentialService = new Mock<IUserBehaviorService>();
 
+			_mediator = new Mock<IMediator>();
 			_simpleInMemoryDb = SimpleInMemoryDb.InitializeDbWithDefaultSeedData();
-			_passwordHistoryRepo = new PasswordHistoryRespository(_simpleInMemoryDb);
+			_passwordHistoryRepo = new PasswordHistoryRespository(_simpleInMemoryDb, _mediator.Object);
 
 			_handlerLogger = new Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>>();
 			_eventPublisherServLogger = new Mock<ILogger<ExternalEventPublisherServ>>();

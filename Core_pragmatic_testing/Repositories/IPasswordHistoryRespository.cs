@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Core_pragmatic_testing.Entities;
 
 namespace Core_pragmatic_testing.Repositories
@@ -11,6 +12,6 @@ namespace Core_pragmatic_testing.Repositories
 
 		PasswordHistoryUsingDomainEvents GetPasswordHistoryUsingDomainEvents(string userName, bool isHighProfileUser);
 
-		void UpdatePasswordHistory(PasswordHistory passwordHistory);
+		Task UpdatePasswordHistoryAsync(PasswordHistory passwordHistory);
 	}
 }

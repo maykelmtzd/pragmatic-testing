@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using Core_pragmatic_testing.Entities;
 using Core_pragmatic_testing.Factories;
 using Core_pragmatic_testing.Repositories;
 using Infra_pragmatic_testing.Database;
-
-
+using MediatR;
 
 [assembly: InternalsVisibleTo("Pragmatic_testing_tests")]
 /// <summary>
@@ -24,9 +24,11 @@ namespace Infra_pragmatic_testing.Repositories
 	public class PasswordHistoryRespository : IPasswordHistoryRepository
 	{
 		private readonly ISimpleInMemoryDb _simpleInMemoryDb;
-		public PasswordHistoryRespository(ISimpleInMemoryDb simpleInMemoryDbGateway)
+		private readonly IMediator _mediator;
+		public PasswordHistoryRespository(ISimpleInMemoryDb simpleInMemoryDbGateway, IMediator mediator)
 		{
 			_simpleInMemoryDb = simpleInMemoryDbGateway;
+			_mediator = mediator;
 		}
 		public PasswordHistory GetPasswordHistory(string userName, bool isHighProfileUser)
 		{
@@ -53,8 +55,10 @@ namespace Infra_pragmatic_testing.Repositories
 		/// Result<> is not used.
 		/// </summary>
 		/// <param name="passwordHistory"></param>
-		public void UpdatePasswordHistory(PasswordHistory passwordHistory)
+		public async Task UpdatePasswordHistoryAsync(PasswordHistory passwordHistory)
 		{
+			await _mediator.DispatchDomainEventsAsync(passwordHistory);
+
 			//this could through a DB exception
 			_simpleInMemoryDb.UpdatePasswordHistoryDto
 				(
