@@ -41,8 +41,9 @@ namespace Infra_pragmatic_testing.Services
             var eventGridEvent = MapToEventGridEvent(externalEvent);
             try
             {
+                //TODO Try to read the endpoint from configuration
                 //var topicHostName = new Uri(_eventGridSettings.Value.InvoiceManagementTopicEndpoint).Host;
-                var topicHostName = new Uri("http://someEndpoint").Host;
+                var topicHostName = new Uri("http://someendpoint").Host;
 
                 await _retryPolicy.ExecuteAsync(async ctx =>
                 {

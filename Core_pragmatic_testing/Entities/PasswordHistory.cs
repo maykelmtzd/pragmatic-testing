@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Core_pragmatic_testing.DomainEvents;
 using Core_pragmatic_testing.Factories;
 using Core_pragmatic_testing.PasswordRules;
 
@@ -11,7 +12,7 @@ namespace Core_pragmatic_testing.Entities
 	/// 1- Using domain events.
 	/// 2- Not using domain events.
 	/// 
-	/// In real production code if we decide that domain events are not needed we would need to inherit from DomainEventPublisher.
+	/// In real production code if we decide that domain events are not needed for this class we wouldn't need to inherit from DomainEventPublisher.
 	/// </summary>
 	public class PasswordHistory : DomainEventPublisher
 	{
@@ -48,6 +49,7 @@ namespace Core_pragmatic_testing.Entities
 			{
 				PreviousPasswords.Add(CurrentPassword);
 				CurrentPassword = newPassword;
+				//AddEvent(new NewPasswordCreatedDomainEvent(this));
 				return true;
 			}
 

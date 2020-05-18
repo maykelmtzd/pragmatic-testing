@@ -8,8 +8,8 @@ namespace Core_pragmatic_testing.DomainEvents
 {
 	public class NewPasswordCreatedDomainEvent : INotification
 	{
-		public PasswordHistoryUsingDomainEvents Aggregate { get; }
+		public PasswordHistory Aggregate { get; }
 
-		public NewPasswordCreatedDomainEvent(PasswordHistoryUsingDomainEvents aggregate) => Aggregate = aggregate ?? throw new ArgumentNullException();
+		public NewPasswordCreatedDomainEvent(PasswordHistory aggregate) => Aggregate = aggregate ?? throw new ArgumentNullException();
 	}
 }

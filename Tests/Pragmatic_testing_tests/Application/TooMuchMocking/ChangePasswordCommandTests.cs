@@ -43,7 +43,7 @@ namespace Pragmatic_testing_tests.Application.TooMuchMocking
 		{
 			var changePasswordDto = new ChangePasswordDto()
 			{
-				UserName = "Username1",
+				UserName = "UserName1",
 				CurrentPassword = "OldPassword",
 				NewPassword = "newPassword",
 				NewPasswordConfirmation = "newPassword"
@@ -78,7 +78,7 @@ namespace Pragmatic_testing_tests.Application.TooMuchMocking
 			//So they match in all tests.
 			var changePasswordDto = new ChangePasswordDto()
 			{
-				UserName = "Username1",
+				UserName = "UserName1",
 				CurrentPassword = "currentPassword",
 				NewPassword = "previousPassword1",
 				NewPasswordConfirmation = "previousPassword1"

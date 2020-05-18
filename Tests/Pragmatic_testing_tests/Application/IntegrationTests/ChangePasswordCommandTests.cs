@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +19,9 @@ using Infra_pragmatic_testing.ExternalEvents;
 using Infra_pragmatic_testing.Repositories;
 using Infra_pragmatic_testing.Services;
 using MediatR;
+using Microsoft.Azure.EventGrid;
 using Microsoft.Azure.EventGrid.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -32,50 +35,16 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 	public class ChangePasswordCommandTests
 	{
 		private readonly ChangePasswordCommand.ChangePasswordHandler _changePasswordHandler;
-		private readonly Mock<IUserBehaviorService> _credentialService;
-		private readonly PasswordHistoryRespository _passwordHistoryRepo;
-		private readonly Mock<IMediator> _mediator;
-		private readonly Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>> _handlerLogger;
-		private readonly Mock<ILogger<ExternalEventPublisherServ>> _eventPublisherServLogger;
 		private readonly Mock<IEventGridGateway> _eventGridGateway;
-		private readonly AsyncRetryPolicy _asyncRetryPolicy;
-		private readonly ExternalEventPublisherServ _externalEventPublisherServ;
-		private readonly SimpleInMemoryDb _simpleInMemoryDb;
-		private readonly IOptions<EventGridSettings> _eventGridSettingOptions;
+		private readonly ISimpleInMemoryDb _simpleInMemoryDb;
+		private readonly ServiceProvider _serviceProvider;
+
 		public ChangePasswordCommandTests()
 		{
-			_credentialService = new Mock<IUserBehaviorService>();
-
-			_mediator = new Mock<IMediator>();
-			_simpleInMemoryDb = SimpleInMemoryDb.InitializeDbWithDefaultSeedData();
-			_passwordHistoryRepo = new PasswordHistoryRespository(_simpleInMemoryDb, _mediator.Object);
-
-			_handlerLogger = new Mock<ILogger<ChangePasswordCommand.ChangePasswordHandler>>();
-			_eventPublisherServLogger = new Mock<ILogger<ExternalEventPublisherServ>>();
 			_eventGridGateway = new Mock<IEventGridGateway>();
-
-			_asyncRetryPolicy = Policy
-				   .Handle<Exception>()
-				   .WaitAndRetryAsync(1,
-									  retryAttempt => TimeSpan.FromMilliseconds(1),
-									  (_, __, retryCount, context) => { context["retryCount"] = retryCount; });
-
-			_eventGridSettingOptions = Options.Create(new EventGridSettings()
-			{
-				InvoiceManagementTopicEndpoint = "http://someendpoint",
-				InvoiceManagementTopicKey = "SomeTopicKey"
-			});
-
-			_externalEventPublisherServ = new ExternalEventPublisherServ
-				(
-					_eventGridGateway.Object,
-					_eventGridSettingOptions,
-					_asyncRetryPolicy,
-					_eventPublisherServLogger.Object
-				);
-
-			_changePasswordHandler = new ChangePasswordCommand.ChangePasswordHandler(_credentialService.Object, _passwordHistoryRepo, _handlerLogger.Object,
-				_externalEventPublisherServ);
+			_serviceProvider = ConfigureDi(_eventGridGateway);
+			_simpleInMemoryDb = _serviceProvider.GetRequiredService<ISimpleInMemoryDb>();
+			_changePasswordHandler = _serviceProvider.GetRequiredService<ChangePasswordCommand.ChangePasswordHandler>();
 		}
 
 		[Fact]
@@ -113,14 +82,15 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 			passwordChangeData.NewPassword.Should().Be(changePasswordDto.NewPassword);
 
 			eventList[0].DataVersion.Should().Be("1.0");
-			eventList[0].EventType = EventTypes.PasswordChanged;
+			eventList[0].EventType = Infra_pragmatic_testing.Constants.EventTypes.PasswordChanged;
 
 			return true;
 		}
 
 		private void AssertNewPasswordWasSavedInDB(ChangePasswordDto changePasswordCommandDto)
 		{
-			var savedPasswordHistoryDto = _simpleInMemoryDb.GetPasswordHistoryDto(changePasswordCommandDto.UserName);
+			var simpleInMemoryDb = _serviceProvider.GetRequiredService<ISimpleInMemoryDb>();
+			var savedPasswordHistoryDto = simpleInMemoryDb.GetPasswordHistoryDto(changePasswordCommandDto.UserName);
 
 
 			savedPasswordHistoryDto.UserName.Should().Be(changePasswordCommandDto.UserName);
@@ -165,6 +135,51 @@ namespace Pragmatic_testing_tests.Application.IntegrationTests
 			savedPasswordHistoryDto.UserName.Should().Be(userName);
 			savedPasswordHistoryDto.CurrentPassword.Item1.Should().Be("password3");
 			savedPasswordHistoryDto.PreviousPasswords.Select(t => t.Item1).Should().BeEquivalentTo(new List<string> { "password1", "password2" });
+		}
+
+		/// <summary>
+		/// This method could be place in its own class so it could be reused by several integration tests.
+		/// </summary>
+		/// <param name="eventGridGatewayMock"></param>
+		/// <returns></returns>
+		private ServiceProvider ConfigureDi(Mock<IEventGridGateway> eventGridGatewayMock)
+		{
+			var services = new ServiceCollection();
+
+			services.AddMediatR(typeof(ChangePasswordCommandTests), typeof(ChangePasswordCommand));
+
+			services.AddTransient<IExternalEventPublisherServ, ExternalEventPublisherServ>();
+			services.AddTransient<ChangePasswordCommand.ChangePasswordHandler, ChangePasswordCommand.ChangePasswordHandler>();
+			services.AddTransient<IUserBehaviorService, UserBehaviorService>();
+
+			var userBehaviorGateway = new Mock<IUserBehaviorGateway>();
+			userBehaviorGateway.Setup(mock => mock.IsPlatinumUser(It.IsAny<string>())).Returns("false");
+			services.AddTransient(_ => userBehaviorGateway.Object);
+
+			services.AddTransient<IPasswordHistoryRepository, PasswordHistoryRespository>();
+			services.AddSingleton<ISimpleInMemoryDb>(SimpleInMemoryDb.InitializeDbWithDefaultSeedData());
+
+			var policy = Policy
+			   .Handle<Exception>()
+			   .WaitAndRetryAsync(retryCount: 3,
+								  retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+								  (_, __, retryCount, context) => { context["retryCount"] = retryCount; });
+			services.AddSingleton(policy);
+			
+			services.AddTransient(_ => eventGridGatewayMock.Object);
+
+			var eventGridClient = new EventGridClient(new TopicCredentials("SomeTopicKey"));
+			services.AddSingleton<IEventGridClient>(eventGridClient);
+
+			services.AddSingleton(Options.Create(new EventGridSettings()
+			{
+				InvoiceManagementTopicEndpoint = "http://someendpoint",
+				InvoiceManagementTopicKey = "SomeTopicKey"
+			}));
+
+			services.AddLogging();
+
+			return services.BuildServiceProvider();
 		}
 	}
 }
