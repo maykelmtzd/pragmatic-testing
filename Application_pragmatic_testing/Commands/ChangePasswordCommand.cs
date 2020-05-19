@@ -51,25 +51,29 @@ namespace Application_pragmatic_testing.Commands
 			/// <summary>
 			/// The Handler method was not defined as async just to remove some complexity which is not very relevant 
 			/// for showing when unit tests are or are not valuable.
+			/// 
+			/// //Translate Dto  information into Domain objects format(Some form of validation takes place).
+			/// 
+			/// call external dependencies to retrieve information needed to execute business logic.
+			/// 
+			/// Load domain object(usually aggregate) in memory
+			/// 
+			/// //Call operation on aggregate which mutates some state.
+			/// Use strategy pattern: Pass the isHighProfile to the repo so the passwordHistory is created
+			/// with the right object, HightProfileUserRulesFactory or RegularUserRulesFactory.
+			///  I could add another object that perform some algorithm and only has on concrete implementation. FindPlainEnglishWords()
+			/// 
 			/// </summary>
 			/// <param name="command"></param>
 			/// <returns></returns>
 			public async Task<ChangePasswordResponse> Handle(ChangePasswordCommand command, CancellationToken cancellationToken)
 			{
-				//Translate Dto  information into Domain objects format(Some form of validation takes place).
 				var userName = command.ChangePasswordDto.UserName;
 				var newPassword = new Password(command.ChangePasswordDto.NewPassword);
 
-				//call external dependencies to retrieve information needed to execute business logic.
 				var isHighProfileUser = _userBehaviourService.IsHighProfileUser(userName);
-
-				//Load domain object(usually aggregate) in memory
 				var passwordHistory = _passwordHistoryRepo.GetPasswordHistory(userName, isHighProfileUser);
-
-				//Call operation on aggregate which mutates some state.
-				//Use strategy pattern: Pass the isHighProfile to the repo so the passwordHistory is created
-				//with the right object, HightProfileUserRulesFactory or RegularUserRulesFactory.
-				// I could add another object that perform some algorithm and only has on concrete implementation. FindPlainEnglishWords()
+				
 				var passwordWasNotChanged = !passwordHistory.CreateNewPassword(newPassword);
 
 				if (passwordWasNotChanged)
@@ -82,7 +86,6 @@ namespace Application_pragmatic_testing.Commands
 				}
 
 				_logger.LogInformation($"Saving new password for user {userName}");
-
 				//this could through an exception, see comments on UpdatePasswordHistory method.
 				await _passwordHistoryRepo.UpdatePasswordHistoryAsync(passwordHistory);
 
@@ -102,7 +105,6 @@ namespace Application_pragmatic_testing.Commands
 				#endregion
 
 				var passwordChangedExternalEvent = PasswordChangedData.CreateExternalEvent(userName, newPassword);
-
 				await _externalEventPublisherServ.PublishAsync(passwordChangedExternalEvent);
 
 				return new ChangePasswordResponse()

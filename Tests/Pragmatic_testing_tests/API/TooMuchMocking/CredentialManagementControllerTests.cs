@@ -18,7 +18,7 @@ namespace Pragmatic_testing_tests.API.TooMuchMocking
 {
 	/// <summary>
 	/// Code in ChangePassword action is trivial. We don't need to test at the unit level. 
-	/// The integration tests will cover this code.
+	/// The specflow test or some other integration test will cover this code.
 	/// </summary>
 	public class CredentialManagementControllerTests
 	{
