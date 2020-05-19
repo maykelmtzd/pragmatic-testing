@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Core_pragmatic_testing.PasswordRules;
 
-namespace Core_pragmatic_testing.Factories
+namespace Pragmatic_testing_tests.Core.Factories
 {
 	/// <summary>
 	/// The code in HighProfileUserPasswordRules class is pretty trivial. Let's not write tests for it. 
@@ -13,11 +12,7 @@ namespace Core_pragmatic_testing.Factories
 	/// 1- PasswordHistoryTests.Should_not_create_new_password_if_it_does_not_comply_with_any_of_the_password_rules()
 	/// 2- PasswordHistoryTests.Should_create_new_password_if_it_was_not_used_and_it_comply_with_all_password_rules()
 	/// </summary>
-	public class HighProfileUserPasswordRules : IPasswordRuleSet
+	public class HighProfileUserPasswordRulesTests
 	{
-		public HashSet<IPasswordRule> GetPasswordRules()
-		{
-			return new HashSet<IPasswordRule> { new NewPasswordContainOthersInHistory(), new NewNonLetterCharacterAdded() };
-		}
 	}
 }

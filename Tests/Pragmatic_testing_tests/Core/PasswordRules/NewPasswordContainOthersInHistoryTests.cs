@@ -13,7 +13,7 @@ namespace Pragmatic_testing_tests.Core.PasswordRules
 	/// 1- Everything the function/method needs is specified in the parameters.
 	/// 2- The test just verify the function/method output.
 	/// </summary>
-	public class PasswordNotContainedInHistoryTests
+	public class NewPasswordContainOthersInHistoryTests
 	{
 		private List<Password> _passwordHistory;
 
@@ -22,7 +22,7 @@ namespace Pragmatic_testing_tests.Core.PasswordRules
 		/// <summary>
 		/// History list is not created in order. SUT shouldn't rely on that.
 		/// </summary>
-		public PasswordNotContainedInHistoryTests()
+		public NewPasswordContainOthersInHistoryTests()
 		{
 			_passwordHistory = new List<Password>()
 			{
