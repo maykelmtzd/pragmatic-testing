@@ -48,6 +48,7 @@ namespace Application_pragmatic_testing.Commands
 				_externalEventPublisherServ = externalEventPublisherServ;
 			}
 
+			#region code steps
 			/// <summary>
 			/// The Handler method was not defined as async just to remove some complexity which is not very relevant 
 			/// for showing when unit tests are or are not valuable.
@@ -65,7 +66,8 @@ namespace Application_pragmatic_testing.Commands
 			/// 
 			/// </summary>
 			/// <param name="command"></param>
-			/// <returns></returns>
+			/// <returns></returns> 
+			#endregion
 			public async Task<ChangePasswordResponse> Handle(ChangePasswordCommand command, CancellationToken cancellationToken)
 			{
 				var userName = command.ChangePasswordDto.UserName;

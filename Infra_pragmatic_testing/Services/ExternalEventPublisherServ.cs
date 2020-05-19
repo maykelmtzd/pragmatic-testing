@@ -60,7 +60,7 @@ namespace Infra_pragmatic_testing.Services
             }
         }
 
-        internal EventGridEvent MapToEventGridEvent(ExternalEvent externalEvent)
+        internal static EventGridEvent MapToEventGridEvent(ExternalEvent externalEvent)
         {
             return new EventGridEvent()
             {
